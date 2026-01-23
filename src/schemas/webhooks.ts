@@ -81,7 +81,7 @@ export const OrderPlacedPayloadSchema = z.object({
   friendlyId: z.string(),
   checkoutId: z.string(),
   promotionId: z.string().optional(),
-  status: z.string(),
+  status: z.string(), // e.g., "CONFIRMED", "SHIPPED", etc.
   email: z.string().email(),
   emailMarketingOptIn: z.boolean(),
   username: z.string().optional(),

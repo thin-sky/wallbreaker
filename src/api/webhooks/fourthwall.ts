@@ -61,10 +61,47 @@ app.post('/webhooks/fourthwall', async (c) => {
     let payload: FourthwallWebhookPayload;
     try {
       const parsed = JSON.parse(rawBody);
-      const validated = FourthwallWebhookPayloadSchema.safeParse(parsed);
+      
+      // Fourthwall webhooks have a wrapper structure with metadata fields
+      // The actual event data is in the 'data' field
+      // Structure: { testMode, id, webhookId, shopId, type, apiVersion, createdAt, data }
+      let eventData = parsed;
+      
+      // Strategy 1: Check if payload has the webhook wrapper structure with 'data' field
+      if ('data' in parsed && typeof parsed.data === 'object' && parsed.data !== null) {
+        eventData = parsed.data;
+        // If data exists but doesn't have 'type', add it from the wrapper
+        if (!('type' in eventData) && 'type' in parsed) {
+          eventData = {
+            type: parsed.type,
+            ...eventData,
+          };
+        }
+      }
+      // Strategy 2: If no 'data' field, check if root payload has 'type' (direct event data)
+      else if ('type' in parsed) {
+        eventData = parsed;
+      }
+      
+      // Try to validate the extracted event data
+      let validated = FourthwallWebhookPayloadSchema.safeParse(eventData);
+      
+      // Strategy 3: If validation fails and we have a wrapper, try the root payload
+      if (!validated.success && parsed !== eventData) {
+        validated = FourthwallWebhookPayloadSchema.safeParse(parsed);
+        if (validated.success) {
+          eventData = parsed;
+        }
+      }
 
       if (!validated.success) {
-        console.error('Invalid webhook payload:', validated.error);
+        console.error('Invalid webhook payload structure');
+        console.error('Validation errors:', JSON.stringify(validated.error.issues, null, 2));
+        console.error('Parsed payload keys:', Object.keys(parsed));
+        console.error('Event data keys:', eventData && typeof eventData === 'object' && eventData !== null ? Object.keys(eventData) : 'N/A');
+        console.error('Has data field:', 'data' in parsed);
+        console.error('Data field type:', typeof parsed.data);
+        console.error('Full parsed payload (first 2000 chars):', JSON.stringify(parsed, null, 2).substring(0, 2000));
         return c.json({
           error: 'Invalid payload format',
           details: validated.error.issues,
@@ -73,6 +110,7 @@ app.post('/webhooks/fourthwall', async (c) => {
 
       payload = validated.data;
     } catch (error) {
+      console.error('JSON parse error:', error);
       return c.json({ error: 'Invalid JSON payload' }, 400);
     }
 
