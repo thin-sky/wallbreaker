@@ -7,7 +7,7 @@ Wallbreaker is a headless e-commerce store template built for non-profits and ac
 1.  **Clone the repo**
 2.  **Install dependencies**: `npm install`
 3.  **Configure Fourthwall**: Set up your webhooks to point to your deployment.
-4.  **Deploy**: `npm run deploy`
+4.  **Deploy**: Changes pushed to `main` branch automatically deploy. For manual deployment, use `npm run deploy`.
 
 ## 📖 Documentation for Humans
 

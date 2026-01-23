@@ -147,7 +147,18 @@ crons = [
 
 ## Deployment Process
 
-### Deploy
+### Automatic Deployment
+
+**This project is configured for automatic deployment.** When changes are pushed to the `main` branch, the project automatically:
+1. Runs tests
+2. Builds the project
+3. Deploys to Cloudflare Workers
+
+No manual deployment steps are required for production changes. Simply push to `main` and the CI/CD pipeline handles the rest.
+
+### Manual Deploy (if needed)
+
+For manual deployments or testing:
 
 ```bash
 # Run tests first
@@ -160,49 +171,18 @@ npm run build
 npm run deploy
 ```
 
-### Deploy with GitHub Actions
+### CI/CD Configuration
 
-Create `.github/workflows/deploy.yml`:
+The project uses automatic deployment via GitHub Actions (or Cloudflare Pages integration). The workflow:
 
-```yaml
-name: Deploy to Cloudflare
+The CI/CD pipeline is configured to automatically deploy on pushes to `main`. The workflow:
+- Runs on every push to `main` branch
+- Installs dependencies
+- Runs tests
+- Builds the project
+- Deploys to Cloudflare Workers
 
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v3
-      
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-      
-      - name: Install dependencies
-        run: npm ci --no-optional
-      
-      - name: Run tests
-        run: npm run test
-      
-      - name: Build project
-        run: npm run build:cloudflare
-      
-      - name: Deploy to Cloudflare
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy
-```
-
-Add secrets in GitHub repository settings:
-- `CLOUDFLARE_API_TOKEN` - Create in Cloudflare dashboard under API Tokens
-- `CLOUDFLARE_ACCOUNT_ID` - Found in Cloudflare dashboard
+**Note**: If you need to modify the deployment workflow, check `.github/workflows/` or Cloudflare Pages settings.
 
 ## Post-Deployment Checks
 
@@ -472,13 +452,17 @@ wrangler secret delete MAINTENANCE_MODE
 
 ## Continuous Deployment Best Practices
 
-1. **Always run tests before deploying**
-2. **Monitor logs after deployment**
-3. **Have a rollback plan**
-4. **Document all manual steps**
-5. **Keep secrets secure**
-6. **Tag releases in git**
-7. **Maintain a changelog**
+This project uses automatic deployment. The CI/CD pipeline handles:
+1. ✅ **Running tests before deploying** - Tests run automatically in the pipeline
+2. ✅ **Building the project** - Build happens automatically
+3. ✅ **Deploying to production** - Automatic deployment on `main` branch pushes
+
+Additional best practices:
+- **Monitor logs after deployment** - Use `wrangler tail` or Cloudflare dashboard
+- **Have a rollback plan** - See Rollback Procedure section above
+- **Keep secrets secure** - Secrets are stored in GitHub repository settings
+- **Tag releases in git** - Tag important releases for easy rollback
+- **Maintain a changelog** - Document significant changes
 
 ## Release Checklist
 

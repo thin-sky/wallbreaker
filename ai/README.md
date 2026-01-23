@@ -36,3 +36,7 @@ Welcome, AI Agent. This folder contains the technical source of truth for Wallbr
 - `npm run build`: Build the project.
 - `npm run test`: Run all tests.
 - `npx wrangler d1 execute wallbreaker-db --local`: Run local DB queries.
+
+## 🔄 Deployment
+
+**Automatic Deployment**: This project automatically deploys when changes are pushed to the `main` branch. No manual deployment steps required for production changes.
