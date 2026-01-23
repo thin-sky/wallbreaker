@@ -11,6 +11,7 @@ Welcome, AI Agent. This folder contains the technical source of truth for Wallbr
 5.  **I18n**: Follow Astro's native i18n patterns.
 6.  **Efficiency**: Stay within free tier limits (see `limitations.md`).
 7.  **Documentation**: **NEVER** generate implementation summaries, "readmes", or technical docs unless explicitly requested. Keep all technical truth in this `/ai/` folder.
+8.  **Documentation First**: **ALWAYS** review official documentation for all dependencies (Cloudflare, Astro, Hono, etc.) before suggesting solutions. Use web search to find official docs, then verify configuration against those docs. Never guess at API formats or configuration options.
 
 ## 📁 Documentation Map
 

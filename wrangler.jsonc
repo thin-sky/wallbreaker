@@ -36,10 +36,14 @@
         }
     ],
     // Cron Triggers
+    // Cloudflare uses cron format: minute hour day-of-month month day-of-week
+    // Day-of-week: Use 1-7 format where 7=Sunday (Cloudflare rejects 0 for Sunday)
+    // All times are in UTC. Validate schedules at https://crontab.guru/
+    // Reference: https://developers.cloudflare.com/workers/wrangler/configuration/#triggers
     "triggers": {
         "crons": [
-            "0 2 * * 0", // Weekly backup (Sundays at 2am UTC)
-            "0 3 * * *" // Daily reconciliation (3am UTC)
+            "0 2 * * 7", // At 02:00 on Sunday - Weekly backup (https://crontab.guru/#0_2_*_*_7)
+            "0 3 * * *" // At 03:00 - Daily reconciliation (https://crontab.guru/#0_3_*_*_*)
         ]
     },
     // Environment-specific configurations
