@@ -1,69 +1,73 @@
 {
-    "name": "wallbreaker",
-    "compatibility_date": "2025-03-07",
-    "compatibility_flags": [
-        "nodejs_compat"
-    ],
-    // Cloudflare Worker configuration
-    // Static assets binding - use different name since ASSETS is reserved
-    // Note: Astro generates its own wrangler.json in dist/_worker.js/
-    // This configuration will be merged/overridden by Astro's generated config
-    "assets": {
-        "directory": "./dist/client",
-        "binding": "STATIC_ASSETS"
-    },
-    // D1 Database (add your database_id after creating the database)
-    // Run: wrangler d1 create wallbreaker-db
-    "d1_databases": [
-        {
-            "binding": "DB",
-            "database_name": "wallbreaker-db",
-            "database_id": "YOUR_DATABASE_ID" // Replace with actual ID after creation
-        }
-    ],
-    // R2 Storage (add after creating the bucket)
-    // Run: wrangler r2 bucket create wallbreaker-backups
-    "r2_buckets": [
-        {
-            "binding": "BACKUPS",
-            "bucket_name": "wallbreaker-backups"
-        }
-    ],
-    // Cron Triggers
-    "triggers": {
-        "crons": [
-            "0 2 * * 0", // Weekly backup (Sundays at 2am UTC)
-            "0 3 * * *" // Daily reconciliation (3am UTC)
-        ]
-    },
-    // Environment-specific configurations
-    "env": {
-        "staging": {
-            "name": "wallbreaker-staging",
-            "vars": {
-                "ENVIRONMENT": "staging"
-            }
-            // Uncomment and configure after creating staging resources:
-            // "d1_databases": [
-            //   {
-            //     "binding": "DB",
-            //     "database_name": "wallbreaker-db-staging",
-            //     "database_id": "STAGING_DATABASE_ID"
-            //   }
-            // ],
-            // "r2_buckets": [
-            //   {
-            //     "binding": "BACKUPS",
-            //     "bucket_name": "wallbreaker-backups-staging"
-            //   }
-            // ]
-        },
-        "production": {
-            "name": "wallbreaker-production",
-            "vars": {
-                "ENVIRONMENT": "production"
-            }
-            // Uses default database and bucket configuration above
-        }
-    }
+	"name": "wallbreaker",
+	"compatibility_date": "2025-03-07",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	// Cloudflare Worker configuration
+	// Static assets binding - use different name since ASSETS is reserved
+	// Note: Astro generates its own wrangler.json in dist/_worker.js/
+	// This configuration will be merged/overridden by Astro's generated config
+	"assets": {
+		"directory": "./dist/client",
+		"binding": "STATIC_ASSETS"
+	},
+	// D1 Database (add your database_id after creating the database)
+	// Run: wrangler d1 create wallbreaker-db
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "wallbreaker-db",
+			"database_id": "YOUR_DATABASE_ID" // Replace with actual ID after creation
+		}
+	],
+	// R2 Storage (add after creating the bucket)
+	// Run: wrangler r2 bucket create wallbreaker-backups
+	"r2_buckets": [
+		{
+			"binding": "BACKUPS",
+			"bucket_name": "wallbreaker-backups"
+		},
+		{
+			"bucket_name": "wallbreaker-backups",
+			"binding": "wallbreaker_backups"
+		}
+	],
+	// Cron Triggers
+	"triggers": {
+		"crons": [
+			"0 2 * * 0", // Weekly backup (Sundays at 2am UTC)
+			"0 3 * * *" // Daily reconciliation (3am UTC)
+		]
+	},
+	// Environment-specific configurations
+	"env": {
+		"staging": {
+			"name": "wallbreaker-staging",
+			"vars": {
+				"ENVIRONMENT": "staging"
+			}
+			// Uncomment and configure after creating staging resources:
+			// "d1_databases": [
+			//   {
+			//     "binding": "DB",
+			//     "database_name": "wallbreaker-db-staging",
+			//     "database_id": "STAGING_DATABASE_ID"
+			//   }
+			// ],
+			// "r2_buckets": [
+			//   {
+			//     "binding": "BACKUPS",
+			//     "bucket_name": "wallbreaker-backups-staging"
+			//   }
+			// ]
+		},
+		"production": {
+			"name": "wallbreaker-production",
+			"vars": {
+				"ENVIRONMENT": "production"
+			}
+			// Uses default database and bucket configuration above
+		}
+	}
 }
