@@ -7,6 +7,7 @@ export interface Env {
   // Bindings
   DB: D1Database;
   BACKUPS: R2Bucket;
+  SESSIONS: KVNamespace; // Astro Sessions KV namespace
   
   // Secrets
   FOURTHWALL_WEBHOOK_SECRET: string;

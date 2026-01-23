@@ -8,6 +8,8 @@ export default defineConfig({
     // Astro v6: workerd is now the default dev runtime
     // platformProxy is no longer needed for development
     imageService: 'compile', // Compile images at build time (no Sharp needed at runtime)
+    // Configure session KV binding name to match wrangler.jsonc
+    sessionKVBindingName: 'SESSIONS',
   }),
 
   // Native i18n configuration

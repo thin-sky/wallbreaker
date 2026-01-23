@@ -45,6 +45,13 @@ This document tracks planned features and enhancements for the Wallbreaker proje
   - Sorting options (price, name, date)
   - Pagination or infinite scroll
 
+- [ ] Enhanced Cart Capabilities
+  - Research server-side cart persistence using Astro Sessions and Cloudflare KV
+  - Integrate with FourthWall cart model for better checkout flow
+  - Cross-device cart synchronization
+  - Cart abandonment tracking and recovery
+  - Persistent cart across sessions (currently client-side only)
+
 ### Analytics Enhancements
 
 - [ ] Analytics Dashboard

@@ -12,6 +12,12 @@
         "directory": "./dist/client",
         "binding": "STATIC_ASSETS"
     },
+    "kv_namespaces": [
+        {
+            "binding": "SESSIONS",
+            "id": "47f4910e2fd44805a568723f0399b161"
+        }
+    ],
     // D1 Database
     // Run: wrangler d1 create wallbreaker-db
     "d1_databases": [
@@ -43,20 +49,6 @@
             "vars": {
                 "ENVIRONMENT": "staging"
             }
-            // Uncomment and configure after creating staging resources:
-            // "d1_databases": [
-            //   {
-            //     "binding": "DB",
-            //     "database_name": "wallbreaker-db-staging",
-            //     "database_id": "STAGING_DATABASE_ID"
-            //   }
-            // ],
-            // "r2_buckets": [
-            //   {
-            //     "binding": "BACKUPS",
-            //     "bucket_name": "wallbreaker-backups-staging"
-            //   }
-            // ]
         },
         "production": {
             "name": "wallbreaker-production",
