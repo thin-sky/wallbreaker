@@ -26,7 +26,7 @@ Welcome, AI Agent. This folder contains the technical source of truth for Wallbr
 - **Idempotency**: All webhook handlers must be idempotent.
 - **Semantic HTML**: Use proper tags (`<main>`, `<article>`, etc.) and `<dialog>` for modals.
 - **Utopia/Every Layout**: Follow these principles for typography and layout.
-- **SEO**: Automatic RSS, sitemap, and JSON-LD generation.
+- **SEO**: Automatic sitemap and JSON-LD generation (RSS feed planned - see ROADMAP.md).
 - **Minimal Documentation**: Do not create new documentation files, summaries, or `IMPLEMENTATION_SUMMARY.md` files. Update existing files in `/ai/` if architectural changes occur.
 
 ## 🚀 Common Commands

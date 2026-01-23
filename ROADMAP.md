@@ -21,6 +21,12 @@ This document tracks planned features and enhancements for the Wallbreaker proje
 
 ### Content Management
 
+- [ ] RSS Feed
+  - Blog RSS feed generation (`/rss.xml`)
+  - Compatible with Zod v4 (waiting for `@astrojs/rss` compatibility)
+  - Include all published blog posts
+  - Proper metadata (title, description, pubDate, categories)
+
 - [ ] Decap CMS Integration (Optional)
   - Git-based CMS for non-technical users
   - Visual editor for content

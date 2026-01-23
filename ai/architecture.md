@@ -84,8 +84,8 @@ Handled at runtime on Cloudflare Workers:
 - `/api/ecommerce/*` - GA4 Enhanced Ecommerce tracking and stats
 
 ### Search Architecture
-- **Build-time Indexing**: Content is indexed at build time into `public/search-index.json` to avoid expensive runtime DB queries or external search services.
-- **API Endpoint**: `/api/search` fetches the static index and performs client-side filtering (optimized for small to medium catalogs).
+- **Build-time Indexing**: Content is indexed at build time into `/search-index.json` using an Astro endpoint (`src/pages/search-index.json.ts`). This avoids expensive runtime DB queries or external search services.
+- **API Endpoint**: `/api/search` fetches the build-time index and performs server-side filtering (optimized for small to medium catalogs).
 - **Reactive UI**: Uses Datastar for debounced, real-time search results without full page reloads.
 
 ## Database Schema (D1)

@@ -47,18 +47,18 @@ app.all('*', (c) => {
 export type App = typeof app;
 
 /**
- * Astro API route handler
+ * Astro API route handler (Astro v6 with native Cloudflare support)
  * Passes all requests to Hono with Cloudflare Workers environment
  * 
- * This approach follows Astro's file-based routing pattern:
- * - API routes in src/pages/api/ are always server-rendered
- * - Works with output: "static" since API routes are dynamic by nature
- * - Provides full access to Cloudflare Workers bindings (D1, R2, env vars)
+ * In Astro v6, we can access Cloudflare bindings directly through the 
+ * cloudflare:worker module instead of through Astro.locals.runtime
  * 
- * Reference: https://dev.to/nuro/how-to-use-astro-with-hono-3hlm
+ * Reference: https://astro.build/blog/astro-6-beta/
  */
 export const ALL: APIRoute = async (context) => {
-  // Get Cloudflare Workers environment from Astro context
+  // In Astro v6, env bindings are available through cloudflare:worker
+  // However, for Hono compatibility, we still get them from context
+  // The cloudflare:worker module is more useful in .astro components and middleware
   const env = context.locals.runtime?.env as Env;
   
   // Pass the request to Hono with the Cloudflare env

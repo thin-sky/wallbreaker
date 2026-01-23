@@ -1,10 +1,13 @@
 /**
- * Generate search index at build time
- * This script generates a JSON index of all searchable content
+ * Search Index Endpoint (Astro v6)
+ * Generates a JSON index of all searchable content at build time
+ * This replaces the prebuild script approach which doesn't work with Content Layer API
  */
+import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
-import fs from 'node:fs';
-import path from 'node:path';
+
+// Prerender this endpoint to generate the JSON file at build time
+export const prerender = true;
 
 interface SearchItem {
   type: 'blog' | 'product';
@@ -17,9 +20,7 @@ interface SearchItem {
   category?: string;
 }
 
-async function generateSearchIndex() {
-  console.log('Generating search index...');
-  
+export const GET: APIRoute = async () => {
   const searchIndex: SearchItem[] = [];
   
   // Index blog posts
@@ -27,31 +28,29 @@ async function generateSearchIndex() {
     const blogPosts = await getCollection('blog');
     
     for (const post of blogPosts) {
+      // Skip draft posts
       if (post.data.draft) continue;
       
       searchIndex.push({
         type: 'blog',
         title: post.data.title,
         description: post.data.description,
-        url: `/blog/${post.slug}/`,
+        url: `/blog/${post.id}/`,
         image: post.data.heroImage,
         date: post.data.pubDate.toISOString(),
         tags: post.data.tags,
         category: post.data.category,
       });
     }
-    
-    console.log(`Indexed ${blogPosts.length} blog posts`);
   } catch (error) {
     console.error('Error indexing blog posts:', error);
   }
   
-  // Write search index to public directory
-  const outputPath = path.join(process.cwd(), 'public', 'search-index.json');
-  fs.writeFileSync(outputPath, JSON.stringify(searchIndex, null, 2));
-  
-  console.log(`Search index generated: ${outputPath}`);
-  console.log(`Total items: ${searchIndex.length}`);
-}
-
-generateSearchIndex().catch(console.error);
+  // Return the search index as JSON
+  return new Response(JSON.stringify(searchIndex, null, 2), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};

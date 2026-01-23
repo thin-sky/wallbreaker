@@ -69,6 +69,13 @@ bucket_name = "wallbreaker-backups"
 
 ### 4. Set Environment Secrets
 
+To avoid build errors related to `sharp` (which is incompatible with Cloudflare Workers), this project uses `.npmrc` to omit optional dependencies. If you are deploying via Cloudflare Pages directly:
+
+1. Go to **Settings > Build & deployments > Build configuration**.
+2. Set **Build command** to `npm run build:cloudflare`.
+3. (Optional) Add an environment variable `NPM_FLAGS` with value `--no-optional`.
+
+#### secrets
 ```bash
 # Fourthwall webhook secret
 wrangler secret put FOURTHWALL_WEBHOOK_SECRET
@@ -180,13 +187,13 @@ jobs:
           node-version: '20'
       
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --no-optional
       
       - name: Run tests
         run: npm run test
       
       - name: Build project
-        run: npm run build
+        run: npm run build:cloudflare
       
       - name: Deploy to Cloudflare
         uses: cloudflare/wrangler-action@v3

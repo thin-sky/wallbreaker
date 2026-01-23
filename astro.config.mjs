@@ -5,10 +5,9 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   output: "static", // Static pages + API routes (API routes are always server-rendered)
   adapter: cloudflare({
-    platformProxy: {
-      enabled: true,
-    },
-    imageService: 'passthrough', // Use passthrough for Cloudflare Workers (sharp doesn't work in Workers)
+    // Astro v6: workerd is now the default dev runtime
+    // platformProxy is no longer needed for development
+    imageService: 'compile', // Compile images at build time (no Sharp needed at runtime)
   }),
 
   // Native i18n configuration
@@ -17,12 +16,6 @@ export default defineConfig({
     locales: ['en', 'es', 'fr'],
     routing: {
       prefixDefaultLocale: false,
-    },
-  },
-
-  vite: {
-    define: {
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
     },
   },
 });
