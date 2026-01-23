@@ -33,6 +33,6 @@ Welcome, AI Agent. This folder contains the technical source of truth for Wallbr
 ## 🚀 Common Commands
 
 - `npm run dev`: Start local development.
-- `npm run build`: Build for production.
+- `npm run build`: Build the project.
 - `npm run test`: Run all tests.
 - `npx wrangler d1 execute wallbreaker-db --local`: Run local DB queries.

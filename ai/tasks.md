@@ -201,7 +201,7 @@ export async function getCustomerByEmail(
 # Apply migration locally
 npx wrangler d1 execute wallbreaker-db --local --file=./migrations/0003_add_customers_table.sql
 
-# Apply migration to production
+# Apply migration
 npx wrangler d1 execute wallbreaker-db --file=./migrations/0003_add_customers_table.sql
 ```
 
@@ -416,7 +416,7 @@ Edit the appropriate locale file in `/src/i18n/`:
 
 ## Deploying Changes
 
-### Deploy to Production
+### Deploy
 ```bash
 npm run build
 npm run deploy
@@ -426,15 +426,6 @@ npm run deploy
 ```bash
 npm run build
 npm run preview
-```
-
-### Deploy Specific Environment
-```bash
-# Staging
-wrangler deploy --env staging
-
-# Production
-wrangler deploy --env production
 ```
 
 ## Managing Environment Variables and Secrets
@@ -456,22 +447,17 @@ LOG_LEVEL="info"
 
 These values will be automatically loaded when running `wrangler dev` or `npm run dev`.
 
-### Add a Secret to Production
+### Add a Secret
 
 ```bash
-# Default environment
 wrangler secret put SECRET_NAME
-
-# Specific environment
-wrangler secret put SECRET_NAME --env staging
-wrangler secret put SECRET_NAME --env production
 ```
 
 When prompted, paste the secret value and press Enter.
 
 ### Required Secrets
 
-The following secrets should be set for production:
+The following secrets should be set:
 
 - `FOURTHWALL_WEBHOOK_SECRET` (required) - Webhook signature verification
 - `FOURTHWALL_STOREFRONT_API_KEY` (optional) - For fetching product data
@@ -481,12 +467,7 @@ The following secrets should be set for production:
 
 ### List Secrets
 ```bash
-# Default environment
 wrangler secret list
-
-# Specific environment
-wrangler secret list --env staging
-wrangler secret list --env production
 ```
 
 ### Access in Code
@@ -507,7 +488,7 @@ export default {
 - **Variables** (`vars` in `wrangler.jsonc`): Non-sensitive configuration values that are committed to git
 - **Secrets** (set via `wrangler secret put`): Sensitive values that are encrypted and never stored in version control
 
-For local development, use `.dev.vars` file. For production, use `wrangler secret put`.
+For local development, use `.dev.vars` file. For deployment, use `wrangler secret put`.
 
 ## Debugging
 
@@ -521,7 +502,7 @@ wrangler tail
 # Local
 wrangler d1 execute wallbreaker-db --local --command="SELECT * FROM webhook_events LIMIT 10"
 
-# Production
+# Deployed
 wrangler d1 execute wallbreaker-db --command="SELECT * FROM webhook_events LIMIT 10"
 ```
 

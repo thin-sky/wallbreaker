@@ -1,7 +1,7 @@
 import type { APIRoute} from 'astro';
 
 export const GET: APIRoute = ({ site }) => {
-  const baseUrl = site || 'https://yourdomain.com';
+  const baseUrl = site || 'https://your-worker-name.workers.dev';
   
   // Define all static pages
   const pages = [

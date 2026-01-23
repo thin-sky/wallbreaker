@@ -44,6 +44,12 @@ const currentLocale = locale || Astro.currentLocale || 'en';
     <script>
       import '@/components/LanguageSwitcher';
     </script>
+    
+    <!-- Initialize view transitions -->
+    <script>
+      import { initViewTransitions } from '@/lib/view-transitions';
+      initViewTransitions();
+    </script>
   </head>
   <body>
     <Navigation />
@@ -53,6 +59,11 @@ const currentLocale = locale || Astro.currentLocale || 'en';
     <Footer />
     
     <style is:global>
+      /* View Transition API - Enable MPA transitions */
+      @view-transition {
+        navigation: auto;
+      }
+      
       /* Reset and base styles */
       *, *::before, *::after {
         box-sizing: border-box;
@@ -78,6 +89,59 @@ const currentLocale = locale || Astro.currentLocale || 'en';
       
       main {
         flex: 1;
+        view-transition-name: main-content;
+      }
+      
+      /* View Transition Animations */
+      ::view-transition-old(root),
+      ::view-transition-new(root) {
+        animation-duration: 0.3s;
+        animation-timing-function: ease-in-out;
+      }
+      
+      ::view-transition-old(main-content),
+      ::view-transition-new(main-content) {
+        animation-duration: 0.4s;
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      /* Navigation and footer stay in place during transitions */
+      ::view-transition-old(main-nav),
+      ::view-transition-new(main-nav),
+      ::view-transition-old(main-footer),
+      ::view-transition-new(main-footer) {
+        animation: none;
+      }
+      
+      /* Smooth fade for main content */
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      @keyframes fade-out {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+      }
+      
+      ::view-transition-old(main-content) {
+        animation: fade-out 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      ::view-transition-new(main-content) {
+        animation: fade-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
       
       img, picture, video, canvas, svg {

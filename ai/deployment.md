@@ -18,7 +18,7 @@ Before deploying, ensure you have:
 ### 1. Create D1 Database
 
 ```bash
-# Create production database
+# Create database
 wrangler d1 create wallbreaker-db
 
 # Save the database_id from output, add to wrangler.toml
@@ -35,7 +35,7 @@ database_id = "your-database-id-here"
 ### 2. Run Database Migrations
 
 ```bash
-# Apply all migrations to production
+# Apply all migrations
 wrangler d1 execute wallbreaker-db --file=./migrations/0001_initial_schema.sql
 wrangler d1 execute wallbreaker-db --file=./migrations/0002_add_analytics.sql
 # ... repeat for all migration files
@@ -53,7 +53,7 @@ done
 ### 3. Create R2 Bucket
 
 ```bash
-# Create production bucket
+# Create bucket
 wrangler r2 bucket create wallbreaker-backups
 
 # Verify creation
@@ -87,8 +87,8 @@ FOURTHWALL_WEBHOOK_SECRET="your-webhook-secret-here"
 LOG_LEVEL="info"
 ```
 
-**Production Secrets:**
-Set secrets for each environment using Wrangler CLI:
+**Secrets:**
+Set secrets using Wrangler CLI:
 
 ```bash
 # Required secrets
@@ -107,33 +107,12 @@ wrangler secret put RESEND_API_KEY
 wrangler secret put SENDGRID_API_KEY
 ```
 
-**Environment-Specific Secrets:**
-```bash
-# Staging
-wrangler secret put FOURTHWALL_WEBHOOK_SECRET --env staging
-wrangler secret put FOURTHWALL_STOREFRONT_API_KEY --env staging
-wrangler secret put FOURTHWALL_PLATFORM_API_USERNAME --env staging
-wrangler secret put FOURTHWALL_PLATFORM_API_PASSWORD --env staging
-wrangler secret put LOG_LEVEL --env staging
-
-# Production
-wrangler secret put FOURTHWALL_WEBHOOK_SECRET --env production
-wrangler secret put FOURTHWALL_STOREFRONT_API_KEY --env production
-wrangler secret put FOURTHWALL_PLATFORM_API_USERNAME --env production
-wrangler secret put FOURTHWALL_PLATFORM_API_PASSWORD --env production
-wrangler secret put LOG_LEVEL --env production
-```
-
 When prompted, paste the secret value and press Enter. The value will not be displayed for security.
 
 **Verify Secrets:**
 ```bash
-# List all secrets for default environment
+# List all secrets
 wrangler secret list
-
-# List secrets for specific environment
-wrangler secret list --env staging
-wrangler secret list --env production
 ```
 
 ### 5. Configure wrangler.toml
@@ -164,46 +143,20 @@ crons = [
   "0 3 * * *",   # Daily reconciliation (3am UTC)
 ]
 
-# Environment-specific configurations
-[env.staging]
-name = "wallbreaker-staging"
-d1_databases = [
-  { binding = "DB", database_name = "wallbreaker-db-staging", database_id = "staging-db-id" }
-]
-
-[env.production]
-name = "wallbreaker-production"
-# Uses default config above
 ```
 
 ## Deployment Process
 
-### Development Deploy (Staging)
-
-```bash
-# Build the project
-npm run build
-
-# Deploy to staging environment
-wrangler deploy --env staging
-
-# Or use npm script
-npm run deploy:staging
-```
-
-### Production Deploy
+### Deploy
 
 ```bash
 # Run tests first
 npm run test
 
-# Build for production
+# Build the project
 npm run build
 
-# Deploy to production
-wrangler deploy --env production
-
-# Or use npm script
+# Deploy
 npm run deploy
 ```
 
@@ -244,94 +197,19 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --env production
+          command: deploy
 ```
 
 Add secrets in GitHub repository settings:
 - `CLOUDFLARE_API_TOKEN` - Create in Cloudflare dashboard under API Tokens
 - `CLOUDFLARE_ACCOUNT_ID` - Found in Cloudflare dashboard
 
-## Custom Domain Setup
-
-### 1. Add Domain to Cloudflare
-
-1. Go to Cloudflare dashboard
-2. Click "Add a Site"
-3. Enter your domain name
-4. Follow nameserver setup instructions
-
-### 2. Configure DNS
-
-```bash
-# Add CNAME record pointing to your Worker
-# In Cloudflare dashboard: DNS > Records > Add Record
-
-Type: CNAME
-Name: @ (or www)
-Target: wallbreaker-production.pages.dev
-Proxy: Enabled (orange cloud)
-```
-
-### 3. Update wrangler.toml
-
-```toml
-[env.production]
-routes = [
-  { pattern = "example.com/*", zone_name = "example.com" },
-  { pattern = "www.example.com/*", zone_name = "example.com" }
-]
-```
-
-### 4. Deploy with Custom Domain
-
-```bash
-wrangler deploy --env production
-```
-
-Your site will now be accessible at your custom domain!
-
-## Environment Management
-
-### Multiple Environments
-
-```toml
-# wrangler.toml
-
-# Development (local)
-[env.dev]
-name = "wallbreaker-dev"
-# ... dev-specific config
-
-# Staging
-[env.staging]
-name = "wallbreaker-staging"
-vars = { ENVIRONMENT = "staging" }
-d1_databases = [
-  { binding = "DB", database_name = "wallbreaker-db-staging", database_id = "staging-id" }
-]
-
-# Production
-[env.production]
-name = "wallbreaker-production"
-vars = { ENVIRONMENT = "production" }
-d1_databases = [
-  { binding = "DB", database_name = "wallbreaker-db", database_id = "production-id" }
-]
-```
-
-Deploy to specific environment:
-```bash
-wrangler deploy --env dev
-wrangler deploy --env staging
-wrangler deploy --env production
-```
-
 ## Post-Deployment Checks
 
 ### 1. Health Check
 
 ```bash
-curl https://your-domain.com/api/health
+curl https://your-worker-name.workers.dev/api/health
 ```
 
 Expected response:
@@ -346,7 +224,7 @@ Expected response:
 ### 2. Test Webhook Endpoint
 
 ```bash
-curl -X POST https://your-domain.com/api/webhooks/test \
+curl -X POST https://your-worker-name.workers.dev/api/webhooks/test \
   -H "Content-Type: application/json" \
   -H "X-Fourthwall-Event: fourthwall.test.event" \
   -H "X-Fourthwall-Signature: test-signature" \
@@ -372,7 +250,7 @@ wrangler tail
 ### 5. Test Analytics
 
 ```bash
-curl -X POST https://your-domain.com/api/analytics/events \
+curl -X POST https://your-worker-name.workers.dev/api/analytics/events \
   -H "Content-Type: application/json" \
   -d '{"event_name": "test_event", "path": "/test"}'
 ```
@@ -398,7 +276,7 @@ Or redeploy from a previous git commit:
 ```bash
 git checkout [previous-commit-hash]
 npm run build
-wrangler deploy --env production
+npm run deploy
 git checkout main
 ```
 
@@ -457,7 +335,7 @@ export async function handleMonitoring(c: Context) {
 
 Query periodically:
 ```bash
-curl https://your-domain.com/api/monitoring
+curl https://your-worker-name.workers.dev/api/monitoring
 ```
 
 ## Troubleshooting
@@ -538,7 +416,7 @@ du -sh dist/
 Cloudflare automatically compresses responses. Verify:
 
 ```bash
-curl -H "Accept-Encoding: gzip" -I https://your-domain.com/
+curl -H "Accept-Encoding: gzip" -I https://your-worker-name.workers.dev/
 # Should see: Content-Encoding: gzip
 ```
 
@@ -595,13 +473,12 @@ wrangler secret delete MAINTENANCE_MODE
 ## Continuous Deployment Best Practices
 
 1. **Always run tests before deploying**
-2. **Deploy to staging first**
-3. **Monitor logs after deployment**
-4. **Have a rollback plan**
-5. **Document all manual steps**
-6. **Keep secrets secure**
-7. **Tag releases in git**
-8. **Maintain a changelog**
+2. **Monitor logs after deployment**
+3. **Have a rollback plan**
+4. **Document all manual steps**
+5. **Keep secrets secure**
+6. **Tag releases in git**
+7. **Maintain a changelog**
 
 ## Release Checklist
 
@@ -610,10 +487,8 @@ wrangler secret delete MAINTENANCE_MODE
 - [ ] Secrets configured
 - [ ] Environment variables set
 - [ ] Build successful
-- [ ] Deploy to staging
-- [ ] Test staging environment
-- [ ] Deploy to production
-- [ ] Verify production health checks
+- [ ] Deploy application
+- [ ] Verify health checks
 - [ ] Monitor logs for errors
 - [ ] Test critical user flows
 - [ ] Update changelog

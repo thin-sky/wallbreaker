@@ -10,15 +10,9 @@ This directory contains SQL migration files for the D1 database.
 wrangler d1 execute wallbreaker-db --local --file=./migrations/0001_initial_schema.sql
 ```
 
-### Staging
+### Deployed
 ```bash
-# Apply migration to staging database
-wrangler d1 execute wallbreaker-db-staging --file=./migrations/0001_initial_schema.sql
-```
-
-### Production
-```bash
-# Apply migration to production database
+# Apply migration to deployed database
 wrangler d1 execute wallbreaker-db --file=./migrations/0001_initial_schema.sql
 ```
 
@@ -41,7 +35,7 @@ Examples:
 1. **Always use `IF NOT EXISTS`** - Makes migrations idempotent
 2. **Include comments** - Explain what each migration does
 3. **One logical change per migration** - Don't mix unrelated changes
-4. **Test locally first** - Always test with `--local` flag before production
+4. **Test locally first** - Always test with `--local` flag before deploying
 5. **Keep a backup** - Export database before running migrations
 
 ## Checking Migration Status

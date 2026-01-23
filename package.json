@@ -8,7 +8,6 @@
     "build": "astro build && node scripts/fix-wrangler-config.mjs",
     "preview": "astro preview",
     "deploy": "wrangler deploy",
-    "deploy:staging": "wrangler deploy --env staging",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",

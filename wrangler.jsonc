@@ -4,38 +4,8 @@
     "compatibility_flags": [
         "nodejs_compat"
     ],
-    // Environment Variables
-    // Variables in "vars" are included in every deployment and persist across redeploys
-    // Secrets (sensitive values) must be set separately using `wrangler secret put`
-    // Secrets persist across deployments once set - they are NOT stored in this file
-    //
-    // Required Secrets (set via: wrangler secret put SECRET_NAME):
-    //   - FOURTHWALL_WEBHOOK_SECRET (required) - Webhook signature verification
-    //
-    // Optional Secrets (set via: wrangler secret put SECRET_NAME):
-    //   - FOURTHWALL_STOREFRONT_API_KEY - For fetching product data from Fourthwall
-    //   - FOURTHWALL_PLATFORM_API_USERNAME - Platform API authentication
-    //   - FOURTHWALL_PLATFORM_API_PASSWORD - Platform API authentication
-    //   - LOG_LEVEL - Logging level (info, debug, warn, error)
-    //   - RESEND_API_KEY - For sending emails via Resend
-    //   - SENDGRID_API_KEY - For sending emails via SendGrid
-    //
-    // Local Development:
-    //   Create a .dev.vars file in the project root with your secrets
-    //   Format: SECRET_NAME="value"
-    //   See .dev.vars.example for reference
-    //
-    // To set secrets for a specific environment:
-    //   wrangler secret put SECRET_NAME --env staging
-    //   wrangler secret put SECRET_NAME --env production
-    //
-    // To list all secrets:
-    //   wrangler secret list
-    //
-    // Logging and Observability
-    // Cloudflare Workers automatically log to console.log/console.error
-    // Use `wrangler tail` to stream real-time logs
-    // View logs in Cloudflare Dashboard > Workers & Pages > Your Worker > Logs
+    // Deployed URL (Workers.dev subdomain - automatically assigned)
+    // Workers.dev subdomains are automatically available and don't require route configuration
     "vars": {
         "ENVIRONMENT": "development"
     },
@@ -81,29 +51,4 @@
             "0 3 * * *" // At 03:00 - Daily reconciliation (https://crontab.guru/#0_3_*_*_*)
         ]
     },
-    // Environment-specific configurations
-    // Each environment inherits bindings (DB, BACKUPS, SESSIONS) from above
-    // Environment-specific vars override the default vars section
-    // Secrets must be set separately per environment using `wrangler secret put --env <env>`
-    "env": {
-        "staging": {
-            "name": "wallbreaker-staging",
-            "vars": {
-                "ENVIRONMENT": "staging"
-            }
-            // Note: Secrets must be set separately:
-            //   wrangler secret put FOURTHWALL_WEBHOOK_SECRET --env staging
-            //   wrangler secret put LOG_LEVEL --env staging (set to "debug" for verbose logging)
-        },
-        "production": {
-            "name": "wallbreaker-production",
-            "vars": {
-                "ENVIRONMENT": "production"
-            }
-            // Note: Secrets must be set separately:
-            //   wrangler secret put FOURTHWALL_WEBHOOK_SECRET --env production
-            //   wrangler secret put LOG_LEVEL --env production (set to "info" for production)
-            // Uses default database and bucket configuration above
-        }
-    }
 }

@@ -33,7 +33,7 @@ This file tracks tasks that need to be completed manually by the project maintai
   - Complete store setup wizard
 
 - [ ] **Configure webhook endpoint**
-  - Once the project is deployed, add webhook URL: `https://your-domain.com/api/webhooks/fourthwall`
+  - Once the project is deployed, add webhook URL: `https://your-worker-name.workers.dev/api/webhooks/fourthwall`
   - Found in: Fourthwall Dashboard → Settings → Developers → Webhooks
 
 - [ ] **Generate and save webhook secret**
@@ -51,8 +51,8 @@ This file tracks tasks that need to be completed manually by the project maintai
   - Visit: https://resend.com/signup
   - Free tier: 3,000 emails/month
 
-- [ ] **Add and verify domain**
-  - Add your custom domain in Resend dashboard
+- [ ] **Add and verify domain (if using custom domain)**
+  - Add your domain in Resend dashboard
   - Add DNS records (SPF, DKIM, DMARC)
   - Wait for verification (can take up to 48 hours)
 
@@ -64,44 +64,45 @@ This file tracks tasks that need to be completed manually by the project maintai
 ## Phase 1: Cloudflare Resources
 
 ### D1 Database Setup
-- [x ] **Create production D1 database**
+- [x] **Create production D1 database**
   ```bash
   wrangler d1 create wallbreaker-db
   ```
   - Copy the `database_id` from output
-  - Update `wrangler.toml` with the database_id
+  - Update `wrangler.jsonc` with the database_id
+  - ✅ Database ID: `8d26fb44-42fa-4220-a9ae-f3753ae402e8`
 
-- [ x] **Create staging D1 database (optional but recommended)**
-  ```bash
-  wrangler d1 create wallbreaker-db-staging
-  ```
-  - Copy the `database_id` from output
-  - Update `wrangler.toml` under `[env.staging]`
 
-- [ x] **Run database migrations**
+- [ ] **Run database migrations**
   ```bash
-  # For production
   wrangler d1 execute wallbreaker-db --file=./migrations/0001_initial_schema.sql
-  
-  # For staging
-  wrangler d1 execute wallbreaker-db-staging --file=./migrations/0001_initial_schema.sql
+  wrangler d1 execute wallbreaker-db --file=./migrations/0002_add_ecommerce_events.sql
   ```
 
 ### R2 Storage Setup
-- [x ] **Create R2 bucket for backups**
+- [x] **Create R2 bucket for backups**
   ```bash
   wrangler r2 bucket create wallbreaker-backups
   ```
+  - ✅ Bucket name: `wallbreaker-backups`
 
-- [ x] **Create staging R2 bucket (optional)**
-  ```bash
-  wrangler r2 bucket create wallbreaker-backups-staging
-  ```
 
-- [ x] **Update wrangler.toml with bucket names**
-  - Verify R2 bucket bindings are correct
+- [x] **Update wrangler.jsonc with bucket names**
+  - ✅ R2 bucket bindings are configured correctly
+
+### KV Namespace Setup
+- [x] **KV namespace configured for sessions**
+  - ✅ Binding: `SESSIONS`
+  - ✅ Namespace ID: `47f4910e2fd44805a568723f0399b161`
+  - ✅ Configured in `wrangler.jsonc` for Astro session management
 
 ## Phase 2: Environment Secrets
+
+### Local Development Setup
+- [x] **Create `.dev.vars` file for local development**
+  - ✅ File created with all required secrets
+  - ✅ Secrets documented: `FOURTHWALL_STOREFRONT_API_KEY`, `FOURTHWALL_PLATFORM_API_USERNAME`, `FOURTHWALL_PLATFORM_API_PASSWORD`, `FOURTHWALL_WEBHOOK_SECRET`, `LOG_LEVEL`
+  - ⚠️ **Action Required**: Update `.dev.vars` with your actual secret values
 
 ### Add Secrets to Cloudflare Workers
 - [ ] **Add Fourthwall webhook secret**
@@ -110,83 +111,45 @@ This file tracks tasks that need to be completed manually by the project maintai
   # When prompted, paste the secret from Fourthwall dashboard
   ```
 
-- [ ] **Add Fourthwall Storefront API key (if using)**
+- [x] **Add Fourthwall Storefront API key (if using)**
   ```bash
   wrangler secret put FOURTHWALL_STOREFRONT_API_KEY
   ```
 
-- [ ] **Add email service API key**
+- [x] **Add Fourthwall Platform API credentials (if using)**
   ```bash
-  # For Resend
-  wrangler secret put RESEND_API_KEY
+  wrangler secret put FOURTHWALL_PLATFORM_API_USERNAME
+  wrangler secret put FOURTHWALL_PLATFORM_API_PASSWORD
   ```
 
-- [ ] **Verify secrets are set**
+- [ ] **Add LOG_LEVEL secret (optional, defaults to "info")**
+  ```bash
+  wrangler secret put LOG_LEVEL
+  ```
+
+- [x] **Verify secrets are set**
   ```bash
   wrangler secret list
   ```
 
-## Phase 3: Domain & DNS
-
-### Custom Domain Setup
-- [ ] **Add domain to Cloudflare**
-  - Go to: Cloudflare Dashboard → Add a Site
-  - Enter your domain name
-  - Choose the Free plan
-  - Update nameservers at your domain registrar
-
-- [ ] **Wait for nameserver propagation**
-  - Can take up to 24-48 hours
-  - Check status in Cloudflare dashboard
-
-- [ ] **Add DNS records**
-  ```
-  Type: CNAME
-  Name: @ (or www)
-  Target: wallbreaker-production.pages.dev
-  Proxy: Enabled (orange cloud)
-  ```
-
-- [ ] **Update wrangler.toml with custom domain**
-  ```toml
-  [env.production]
-  routes = [
-    { pattern = "yourdomain.com/*", zone_name = "yourdomain.com" }
-  ]
-  ```
-
-### SSL/TLS Setup
-- [ ] **Verify SSL certificate is issued**
-  - Go to: Cloudflare Dashboard → SSL/TLS → Edge Certificates
-  - Should show "Active Certificate"
-  - May take a few minutes after DNS is configured
-
-## Phase 4: Deployment & Testing
+## Phase 3: Deployment & Testing
 
 ### Initial Deployment
-- [ ] **Deploy to staging (if configured)**
-  ```bash
-  npm run deploy:staging
-  ```
-
-- [ ] **Test staging environment**
-  - Visit staging URL
-  - Test webhook endpoint: `/api/health`
-  - Verify pages load correctly
-
-- [ ] **Deploy to production**
+- [ ] **Deploy the application**
   ```bash
   npm run deploy
   ```
 
-- [ ] **Test production environment**
-  - Visit production URL (custom domain)
+- [ ] **Test the deployment**
+  - Visit the deployed URL (your-worker-name.workers.dev)
+  - Test webhook endpoint: `/api/health`
+  - Verify pages load correctly
   - Test all pages and routes
   - Verify analytics tracking works
 
 ### Post-Deployment Configuration
 - [ ] **Update Fourthwall webhook URL**
-  - In Fourthwall dashboard, set webhook URL to: `https://yourdomain.com/api/webhooks/fourthwall`
+  - In Fourthwall dashboard, set webhook URL to: `https://your-worker-name.workers.dev/api/webhooks/fourthwall`
   - Enable webhook events you want to receive
 
 - [ ] **Test webhook delivery**
@@ -236,7 +199,17 @@ This file tracks tasks that need to be completed manually by the project maintai
   - List contact information for support
   - Save troubleshooting steps
 
-## Phase 6: Optional Enhancements
+## Phase 6: Development Features
+
+### View Transitions
+- [x] **Implement View Transition API for MPA navigation**
+  - ✅ Added `@view-transition` CSS at-rule with `navigation: auto`
+  - ✅ Created view transition utilities (`src/lib/view-transitions.ts`)
+  - ✅ Added view-transition-name to key elements (navigation, main content, footer)
+  - ✅ Custom animations configured for smooth page transitions
+  - See: https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API/Using
+
+## Phase 7: Optional Enhancements
 
 ### CI/CD Setup (Optional but Recommended)
 - [ ] **Set up GitHub Actions**
@@ -268,18 +241,19 @@ This file tracks tasks that need to be completed manually by the project maintai
 - [ ] Cloudflare account + Wrangler setup
 - [ ] Fourthwall account + webhook secret
 - [ ] Email service account + API key
-- [ ] D1 database created + migrated
-- [ ] R2 bucket created
+- [x] D1 database created (✅ configured in wrangler.jsonc)
+- [ ] D1 database migrations run
+- [x] R2 bucket created (✅ configured in wrangler.jsonc)
+- [x] Local development secrets setup (✅ .dev.vars created)
 - [ ] All secrets added to Workers
 - [ ] Initial deployment successful
 - [ ] Webhook endpoint configured in Fourthwall
 
 ### Important (Should Complete Soon)
-- [ ] Custom domain configured
-- [ ] SSL certificate verified
 - [ ] Monitoring alerts set up
-- [ ] Production testing completed
+- [ ] Testing completed
 - [ ] Backup strategy documented
+- [x] View transitions implemented (✅ MPA navigation animations)
 
 ### Nice to Have (Can Wait)
 - [ ] CI/CD pipeline
@@ -288,12 +262,10 @@ This file tracks tasks that need to be completed manually by the project maintai
 
 ## Notes & Custom Configuration
 
-### Environment-Specific Notes
+### Deployment Notes
 ```
 Add your own notes here as you complete setup:
-- Production URL: 
-- Staging URL: 
-- Domain registrar: 
+- Deployed URL: 
 - Special configurations: 
 ```
 
@@ -314,12 +286,18 @@ wrangler tail
 
 # Check D1 database
 wrangler d1 execute wallbreaker-db --command="SELECT COUNT(*) FROM webhook_events"
+wrangler d1 execute wallbreaker-db --local --command="SELECT * FROM analytics_pageviews LIMIT 10"
 
 # List secrets
 wrangler secret list
 
 # Check R2 usage
 wrangler r2 bucket info wallbreaker-backups
+wrangler r2 bucket list
+
+# Deploy
+npm run build
+npm run deploy
 ```
 
 ---
