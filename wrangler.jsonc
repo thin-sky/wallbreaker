@@ -1,9 +1,16 @@
 {
     "name": "wallbreaker",
-    "compatibility_date": "2025-03-07",
+    "compatibility_date": "2026-01-20",
     "compatibility_flags": [
         "nodejs_compat"
     ],
+    // Logging and Observability
+    // Cloudflare Workers automatically log to console.log/console.error
+    // Use `wrangler tail` to stream real-time logs
+    // View logs in Cloudflare Dashboard > Workers & Pages > Your Worker > Logs
+    "vars": {
+        "LOG_LEVEL": "info"
+    },
     // Cloudflare Worker configuration
     // Static assets binding - use different name since ASSETS is reserved
     // Note: Astro generates its own wrangler.json in dist/_worker.js/
@@ -51,13 +58,15 @@
         "staging": {
             "name": "wallbreaker-staging",
             "vars": {
-                "ENVIRONMENT": "staging"
+                "ENVIRONMENT": "staging",
+                "LOG_LEVEL": "debug" // More verbose logging for staging
             }
         },
         "production": {
             "name": "wallbreaker-production",
             "vars": {
-                "ENVIRONMENT": "production"
+                "ENVIRONMENT": "production",
+                "LOG_LEVEL": "info" // Production logging level
             }
             // Uses default database and bucket configuration above
         }
