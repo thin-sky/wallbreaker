@@ -437,20 +437,56 @@ wrangler deploy --env staging
 wrangler deploy --env production
 ```
 
-## Managing Environment Variables
+## Managing Environment Variables and Secrets
 
-### Add a Secret
+### Local Development Setup
+
+Create a `.dev.vars` file in the project root (already git-ignored):
+
 ```bash
-# Local development
-echo "SECRET_VALUE" | wrangler secret put SECRET_NAME --local
+# Fourthwall API Credentials
+FOURTHWALL_STOREFRONT_API_KEY="your-storefront-api-key-here"
+FOURTHWALL_PLATFORM_API_USERNAME="your-platform-username-here"
+FOURTHWALL_PLATFORM_API_PASSWORD="your-platform-password-here"
+FOURTHWALL_WEBHOOK_SECRET="your-webhook-secret-here"
 
-# Production
-echo "SECRET_VALUE" | wrangler secret put SECRET_NAME
+# Logging
+LOG_LEVEL="info"
 ```
+
+These values will be automatically loaded when running `wrangler dev` or `npm run dev`.
+
+### Add a Secret to Production
+
+```bash
+# Default environment
+wrangler secret put SECRET_NAME
+
+# Specific environment
+wrangler secret put SECRET_NAME --env staging
+wrangler secret put SECRET_NAME --env production
+```
+
+When prompted, paste the secret value and press Enter.
+
+### Required Secrets
+
+The following secrets should be set for production:
+
+- `FOURTHWALL_WEBHOOK_SECRET` (required) - Webhook signature verification
+- `FOURTHWALL_STOREFRONT_API_KEY` (optional) - For fetching product data
+- `FOURTHWALL_PLATFORM_API_USERNAME` (optional) - Platform API authentication
+- `FOURTHWALL_PLATFORM_API_PASSWORD` (optional) - Platform API authentication
+- `LOG_LEVEL` (optional) - Logging level (info, debug, warn, error)
 
 ### List Secrets
 ```bash
+# Default environment
 wrangler secret list
+
+# Specific environment
+wrangler secret list --env staging
+wrangler secret list --env production
 ```
 
 ### Access in Code
@@ -458,10 +494,20 @@ wrangler secret list
 export default {
   async fetch(request: Request, env: Env) {
     const apiKey = env.FOURTHWALL_STOREFRONT_API_KEY;
-    // Use the secret
+    const username = env.FOURTHWALL_PLATFORM_API_USERNAME;
+    const password = env.FOURTHWALL_PLATFORM_API_PASSWORD;
+    const logLevel = env.LOG_LEVEL || 'info';
+    // Use the secrets
   },
 };
 ```
+
+### Environment Variables vs Secrets
+
+- **Variables** (`vars` in `wrangler.jsonc`): Non-sensitive configuration values that are committed to git
+- **Secrets** (set via `wrangler secret put`): Sensitive values that are encrypted and never stored in version control
+
+For local development, use `.dev.vars` file. For production, use `wrangler secret put`.
 
 ## Debugging
 

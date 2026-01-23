@@ -64,21 +64,21 @@ This file tracks tasks that need to be completed manually by the project maintai
 ## Phase 1: Cloudflare Resources
 
 ### D1 Database Setup
-- [ ] **Create production D1 database**
+- [x ] **Create production D1 database**
   ```bash
   wrangler d1 create wallbreaker-db
   ```
   - Copy the `database_id` from output
   - Update `wrangler.toml` with the database_id
 
-- [ ] **Create staging D1 database (optional but recommended)**
+- [ x] **Create staging D1 database (optional but recommended)**
   ```bash
   wrangler d1 create wallbreaker-db-staging
   ```
   - Copy the `database_id` from output
   - Update `wrangler.toml` under `[env.staging]`
 
-- [ ] **Run database migrations**
+- [ x] **Run database migrations**
   ```bash
   # For production
   wrangler d1 execute wallbreaker-db --file=./migrations/0001_initial_schema.sql
@@ -88,17 +88,17 @@ This file tracks tasks that need to be completed manually by the project maintai
   ```
 
 ### R2 Storage Setup
-- [ ] **Create R2 bucket for backups**
+- [x ] **Create R2 bucket for backups**
   ```bash
   wrangler r2 bucket create wallbreaker-backups
   ```
 
-- [ ] **Create staging R2 bucket (optional)**
+- [ x] **Create staging R2 bucket (optional)**
   ```bash
   wrangler r2 bucket create wallbreaker-backups-staging
   ```
 
-- [ ] **Update wrangler.toml with bucket names**
+- [ x] **Update wrangler.toml with bucket names**
   - Verify R2 bucket bindings are correct
 
 ## Phase 2: Environment Secrets

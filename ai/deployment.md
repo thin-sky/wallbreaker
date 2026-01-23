@@ -75,22 +75,66 @@ To avoid build errors related to `sharp` (which is incompatible with Cloudflare 
 2. Set **Build command** to `npm run build:cloudflare`.
 3. (Optional) Add an environment variable `NPM_FLAGS` with value `--no-optional`.
 
-#### secrets
+#### Secrets Management
+
+**Local Development:**
+Create a `.dev.vars` file in the project root with your secrets:
 ```bash
-# Fourthwall webhook secret
-wrangler secret put FOURTHWALL_WEBHOOK_SECRET
-
-# Email service API key (if using Resend)
-wrangler secret put RESEND_API_KEY
-
-# Email service API key (if using SendGrid)
-wrangler secret put SENDGRID_API_KEY
-
-# Optional: Fourthwall Storefront API key for fetching data
-wrangler secret put FOURTHWALL_STOREFRONT_API_KEY
+FOURTHWALL_STOREFRONT_API_KEY="your-storefront-api-key-here"
+FOURTHWALL_PLATFORM_API_USERNAME="your-platform-username-here"
+FOURTHWALL_PLATFORM_API_PASSWORD="your-platform-password-here"
+FOURTHWALL_WEBHOOK_SECRET="your-webhook-secret-here"
+LOG_LEVEL="info"
 ```
 
-When prompted, paste the secret value and press Enter.
+**Production Secrets:**
+Set secrets for each environment using Wrangler CLI:
+
+```bash
+# Required secrets
+wrangler secret put FOURTHWALL_WEBHOOK_SECRET
+
+# Optional Fourthwall API credentials
+wrangler secret put FOURTHWALL_STOREFRONT_API_KEY
+wrangler secret put FOURTHWALL_PLATFORM_API_USERNAME
+wrangler secret put FOURTHWALL_PLATFORM_API_PASSWORD
+
+# Logging configuration
+wrangler secret put LOG_LEVEL
+
+# Email service API keys (if using)
+wrangler secret put RESEND_API_KEY
+wrangler secret put SENDGRID_API_KEY
+```
+
+**Environment-Specific Secrets:**
+```bash
+# Staging
+wrangler secret put FOURTHWALL_WEBHOOK_SECRET --env staging
+wrangler secret put FOURTHWALL_STOREFRONT_API_KEY --env staging
+wrangler secret put FOURTHWALL_PLATFORM_API_USERNAME --env staging
+wrangler secret put FOURTHWALL_PLATFORM_API_PASSWORD --env staging
+wrangler secret put LOG_LEVEL --env staging
+
+# Production
+wrangler secret put FOURTHWALL_WEBHOOK_SECRET --env production
+wrangler secret put FOURTHWALL_STOREFRONT_API_KEY --env production
+wrangler secret put FOURTHWALL_PLATFORM_API_USERNAME --env production
+wrangler secret put FOURTHWALL_PLATFORM_API_PASSWORD --env production
+wrangler secret put LOG_LEVEL --env production
+```
+
+When prompted, paste the secret value and press Enter. The value will not be displayed for security.
+
+**Verify Secrets:**
+```bash
+# List all secrets for default environment
+wrangler secret list
+
+# List secrets for specific environment
+wrangler secret list --env staging
+wrangler secret list --env production
+```
 
 ### 5. Configure wrangler.toml
 
