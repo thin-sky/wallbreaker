@@ -1,16 +1,15 @@
 import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
-import { generateSearchIndex } from './src/integrations/generate-search-index.ts';
 
 // https://astro.build/config
 export default defineConfig({
-  output: "static",
+  output: "static", // Static pages + API routes (API routes are always server-rendered)
   adapter: cloudflare({
     platformProxy: {
       enabled: true,
     },
+    imageService: 'passthrough', // Use passthrough for Cloudflare Workers (sharp doesn't work in Workers)
   }),
-  integrations: [generateSearchIndex()],
 
   // Native i18n configuration
   i18n: {

@@ -19,7 +19,7 @@ Wallbreaker is a headless e-commerce store template built for non-profits and ac
 
 ## 🛠 Tech Stack
 
-- **Frontend**: Astro 4.x (Static & SSR)
+- **Frontend**: Astro 5.x (Static & SSR)
 - **API**: Hono on Cloudflare Workers
 - **Database**: Cloudflare D1 (SQLite)
 - **Storage**: Cloudflare R2

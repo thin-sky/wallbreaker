@@ -20,7 +20,7 @@ All project documentation is in `/ai/`:
 5. **NEVER** use heavy JavaScript frameworks - stick to Custom Elements
 
 ## Tech Stack
-Astro 4.x • Hono • Cloudflare Workers • D1 • R2 • Zod • Custom Elements
+Astro 5.x • Hono • Cloudflare Workers • D1 • R2 • Zod • Custom Elements
 
 ## Questions?
 1. Check `/ai/README.md`

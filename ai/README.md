@@ -4,7 +4,7 @@ Welcome, AI Agent. This folder contains the technical source of truth for Wallbr
 
 ## 🤖 Agent Quick Reference
 
-1.  **Tech Stack**: Astro 4.x, Hono, Cloudflare (Workers, D1, R2, Workflows), Zod, Custom Elements.
+1.  **Tech Stack**: Astro 5.x, Hono, Cloudflare (Workers, D1, R2, Workflows), Zod, Custom Elements.
 2.  **Validation**: **NEVER** query D1 or handle webhooks without Zod validation.
 3.  **Webhooks**: Verify Fourthwall signatures and check idempotency in D1.
 4.  **UI**: Use Custom Elements and modern CSS. **NO** heavy JS frameworks (React, etc.).

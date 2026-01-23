@@ -1,17 +1,17 @@
 import { defineMiddleware } from 'astro:middleware';
-import app from './api/index';
 
+/**
+ * Astro Middleware
+ * 
+ * API routes are now handled via file-based routing in src/pages/api/[...path].ts
+ * This middleware can be used for other cross-cutting concerns like:
+ * - Analytics tracking
+ * - Request logging
+ * - Security headers
+ * - i18n locale detection
+ */
 export const onRequest = defineMiddleware(async (context, next) => {
-  // If the request is for an API route, handle it with Hono
-  if (context.url.pathname.startsWith('/api/')) {
-    const request = context.request;
-    const env = context.locals.runtime.env;
-    
-    // Pass the request to Hono with the Cloudflare env
-    const response = await app.fetch(request, env);
-    return response;
-  }
-  
-  // For non-API routes, continue with Astro rendering
+  // API routes are handled by src/pages/api/[...path].ts
+  // This middleware is available for other concerns if needed
   return next();
 });
