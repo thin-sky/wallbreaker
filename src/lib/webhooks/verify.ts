@@ -1,9 +1,15 @@
 /**
  * Verify Fourthwall webhook signature using HMAC SHA-256
- * Based on Fourthwall webhook documentation
+ * Based on Fourthwall webhook documentation:
+ * https://docs.fourthwall.com/platform/webhooks/signature-verification/
+ * 
+ * The signature is computed as:
+ * 1. HMAC-SHA256 of the raw request body using the secret key
+ * 2. Base64 encode the digest
+ * 3. Compare with X-Fourthwall-Hmac-SHA256 header value
  * 
  * @param payload Raw request body as string
- * @param signature Signature from X-Fourthwall-Signature header
+ * @param signature Signature from X-Fourthwall-Hmac-SHA256 header (base64 encoded)
  * @param secret Webhook secret from Fourthwall dashboard
  * @returns True if signature is valid, false otherwise
  */
@@ -30,14 +36,16 @@ export async function verifyWebhookSignature(
     // Generate HMAC signature
     const signatureBuffer = await crypto.subtle.sign('HMAC', key, payloadData);
     
-    // Convert to hex string
-    const hashArray = Array.from(new Uint8Array(signatureBuffer));
-    const expectedSignature = hashArray
-      .map((b) => b.toString(16).padStart(2, '0'))
-      .join('');
+    // Convert to base64 (as per Fourthwall documentation)
+    // The header value is base64 encoded, so we need to compare base64 strings
+    // Use a more robust method that handles large arrays
+    const hashArray = new Uint8Array(signatureBuffer);
+    const binaryString = Array.from(hashArray, byte => String.fromCharCode(byte)).join('');
+    const base64String = btoa(binaryString);
     
-    // Compare signatures (constant-time comparison)
-    return timingSafeEqual(expectedSignature, signature);
+    // Compare signatures using constant-time comparison
+    // Both should be base64 encoded strings
+    return timingSafeEqual(base64String, signature);
   } catch (error) {
     console.error('Error verifying webhook signature:', error);
     return false;

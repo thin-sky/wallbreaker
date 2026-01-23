@@ -26,16 +26,25 @@ const app = new Hono<{ Bindings: Env }>();
  */
 app.post('/webhooks/fourthwall', async (c) => {
   try {
-    // 1. Get raw body and signature
-    const rawBody = await c.req.text();
-    const signature = c.req.header('x-fourthwall-signature') ||
-      c.req.header('x-fourthwall-hmac-sha256') || '';
-
-    if (!signature) {
-      return c.json({ error: 'Missing webhook signature' }, 401);
+    // 1. Validate Content-Type is JSON
+    const contentType = c.req.header('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      return c.json({ 
+        error: 'Content-Type must be application/json' 
+      }, 415);
     }
 
-    // 2. Verify webhook signature
+    // 2. Get raw body and signature
+    // According to Fourthwall docs, the header is X-Fourthwall-Hmac-SHA256
+    // Reference: https://docs.fourthwall.com/platform/webhooks/signature-verification/
+    const rawBody = await c.req.text();
+    const signature = c.req.header('x-fourthwall-hmac-sha256') || '';
+
+    if (!signature) {
+      return c.json({ error: 'Missing webhook signature (X-Fourthwall-Hmac-SHA256 header required)' }, 401);
+    }
+
+    // 3. Verify webhook signature
     const secret = c.env.FOURTHWALL_WEBHOOK_SECRET;
     if (!secret) {
       console.error('FOURTHWALL_WEBHOOK_SECRET not configured');
@@ -48,7 +57,7 @@ app.post('/webhooks/fourthwall', async (c) => {
       return c.json({ error: 'Invalid signature' }, 401);
     }
 
-    // 3. Parse and validate payload
+    // 4. Parse and validate payload
     let payload: FourthwallWebhookPayload;
     try {
       const parsed = JSON.parse(rawBody);
@@ -67,7 +76,7 @@ app.post('/webhooks/fourthwall', async (c) => {
       return c.json({ error: 'Invalid JSON payload' }, 400);
     }
 
-    // 4. Check idempotency (have we processed this webhook before?)
+    // 5. Check idempotency (have we processed this webhook before?)
     const webhookId = getWebhookId(payload);
     const db = c.env.DB;
 
@@ -81,7 +90,7 @@ app.post('/webhooks/fourthwall', async (c) => {
       });
     }
 
-    // 5. Store webhook event for audit trail and idempotency
+    // 6. Store webhook event for audit trail and idempotency
     await insertWebhookEvent(db, {
       id: webhookId,
       event_type: payload.type,
@@ -90,7 +99,7 @@ app.post('/webhooks/fourthwall', async (c) => {
       processed_at: Math.floor(Date.now() / 1000),
     });
 
-    // 6. Process webhook based on event type
+    // 7. Process webhook based on event type
     const eventType = payload.type;
 
     switch (eventType) {
@@ -146,7 +155,7 @@ app.post('/webhooks/fourthwall', async (c) => {
         console.log(`Unknown event type: ${eventType}`);
     }
 
-    // 7. Return success response
+    // 8. Return success response
     return c.json({
       success: true,
       webhook_id: webhookId,
