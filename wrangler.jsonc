@@ -6,6 +6,11 @@
     ],
     // Cloudflare Pages integration
     "pages_build_output_dir": "dist",
+    // Assets configuration - use different binding name since ASSETS is reserved in Pages
+    "assets": {
+        "directory": "./dist/client",
+        "binding": "STATIC_ASSETS"
+    },
     // D1 Database (add your database_id after creating the database)
     // Run: wrangler d1 create wallbreaker-db
     "d1_databases": [
