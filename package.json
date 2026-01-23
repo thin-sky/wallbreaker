@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "tsx scripts/generate-search-index.ts",
     "build": "astro build",
     "preview": "astro preview",
     "deploy": "wrangler deploy",

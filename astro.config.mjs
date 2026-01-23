@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
+import { generateSearchIndex } from './src/integrations/generate-search-index.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -9,6 +10,7 @@ export default defineConfig({
       enabled: true,
     },
   }),
+  integrations: [generateSearchIndex()],
 
   // Native i18n configuration
   i18n: {
