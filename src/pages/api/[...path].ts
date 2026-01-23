@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import type { Env } from '../../types';
 import fourthwallWebhooks from '../../api/webhooks/fourthwall';
 import analyticsRoutes from '../../api/analytics';
@@ -50,17 +51,16 @@ export type App = typeof app;
  * Astro API route handler (Astro v6 with native Cloudflare support)
  * Passes all requests to Hono with Cloudflare Workers environment
  * 
- * In Astro v6, we can access Cloudflare bindings directly through the 
- * cloudflare:worker module instead of through Astro.locals.runtime
+ * In Astro v6, we access Cloudflare bindings directly through the 
+ * cloudflare:workers module instead of through Astro.locals.runtime.env
  * 
  * Reference: https://astro.build/blog/astro-6-beta/
  */
 export const ALL: APIRoute = async (context) => {
-  // In Astro v6, env bindings are available through cloudflare:worker
-  // However, for Hono compatibility, we still get them from context
-  // The cloudflare:worker module is more useful in .astro components and middleware
-  const env = context.locals.runtime?.env as Env;
+  // In Astro v6, env bindings are imported from 'cloudflare:workers'
+  // This replaces the deprecated context.locals.runtime.env
+  const envBindings = env as Env;
   
   // Pass the request to Hono with the Cloudflare env
-  return app.fetch(context.request, env);
+  return app.fetch(context.request, envBindings);
 };
