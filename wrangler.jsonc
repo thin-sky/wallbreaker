@@ -4,9 +4,10 @@
     "compatibility_flags": [
         "nodejs_compat"
     ],
-    // Cloudflare Pages integration
-    "pages_build_output_dir": "dist",
-    // Assets configuration - use different binding name since ASSETS is reserved in Pages
+    // Cloudflare Worker configuration
+    // Static assets binding - use different name since ASSETS is reserved
+    // Note: Astro generates its own wrangler.json in dist/_worker.js/
+    // This configuration will be merged/overridden by Astro's generated config
     "assets": {
         "directory": "./dist/client",
         "binding": "STATIC_ASSETS"
