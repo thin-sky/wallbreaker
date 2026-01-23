@@ -1,0 +1,175 @@
+---
+import { getTranslations } from '@/i18n/utils';
+
+const t = getTranslations(Astro.currentLocale);
+---
+
+<section class="newsletter-section">
+  <div class="container newsletter-container">
+    <div class="newsletter-content">
+      <h2 class="newsletter-title">{t.newsletter.title}</h2>
+      <p class="newsletter-description">{t.newsletter.description}</p>
+    </div>
+    <form class="newsletter-form" id="newsletter-form">
+      <label for="newsletter-email" class="visually-hidden">
+        {t.newsletter.email_label}
+      </label>
+      <input
+        type="email"
+        id="newsletter-email"
+        name="email"
+        placeholder={t.newsletter.email_placeholder}
+        required
+        class="newsletter-input"
+        aria-label={t.newsletter.email_label}
+      />
+      <button type="submit" class="newsletter-button">
+        {t.newsletter.subscribe}
+      </button>
+    </form>
+    <p class="newsletter-privacy">{t.newsletter.privacy_note}</p>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById('newsletter-form');
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const email = formData.get('email');
+      
+      // TODO: Replace with actual newsletter API endpoint
+      try {
+        // Example: await fetch('/api/newsletter/subscribe', { method: 'POST', body: JSON.stringify({ email }) });
+        console.log('Newsletter subscription:', email);
+        
+        // Show success message
+        const button = form.querySelector('.newsletter-button');
+        const originalText = button?.textContent;
+        if (button) {
+          button.textContent = '✓ Subscribed!';
+          button.disabled = true;
+          setTimeout(() => {
+            if (button && originalText) {
+              button.textContent = originalText;
+              button.disabled = false;
+            }
+          }, 3000);
+        }
+        
+        form.reset();
+      } catch (error) {
+        console.error('Newsletter subscription error:', error);
+        alert('Something went wrong. Please try again later.');
+      }
+    });
+  }
+</script>
+
+<style>
+  .newsletter-section {
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    padding: 3rem 0;
+  }
+
+  .newsletter-container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .newsletter-content {
+    margin-bottom: 2rem;
+  }
+
+  .newsletter-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .newsletter-description {
+    font-size: 1.125rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .newsletter-form {
+    display: flex;
+    gap: 0.75rem;
+    max-width: 500px;
+    margin: 0 auto 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .newsletter-input {
+    flex: 1;
+    min-width: 250px;
+    padding: 0.875rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .newsletter-input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  .newsletter-button {
+    padding: 0.875rem 2rem;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+  }
+
+  .newsletter-button:hover:not(:disabled) {
+    background: #1d4ed8;
+  }
+
+  .newsletter-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .newsletter-privacy {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .newsletter-form {
+      flex-direction: column;
+    }
+
+    .newsletter-input {
+      min-width: 100%;
+    }
+
+    .newsletter-button {
+      width: 100%;
+    }
+
+    .newsletter-title {
+      font-size: 1.5rem;
+    }
+
+    .newsletter-description {
+      font-size: 1rem;
+    }
+  }
+</style>

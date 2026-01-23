@@ -1,0 +1,54 @@
+# Build outputs
+dist/
+.astro/
+.vercel/
+.netlify/
+.wrangler/
+
+# Dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Environment files
+.env
+.env.*
+!.env.example
+.dev.vars
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+
+# Generated files
+public/search-index.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.code-workspace
+
+# OS
+Thumbs.db
+
+# Testing
+test-results/
+playwright-report/
+playwright/.cache/
+coverage/
+
+# Wrangler
+.dev.vars.example
+wrangler.toml.backup
+
+# Misc
+*.local

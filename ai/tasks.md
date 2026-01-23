@@ -1,0 +1,503 @@
+# Common Tasks Guide
+
+This guide provides step-by-step instructions for common development tasks in Wallbreaker.
+
+## Working with Fourthwall Webhooks
+
+### Supported Webhook Events
+
+All 12 Fourthwall webhook event types are fully supported with Zod validation ([reference](https://docs.fourthwall.com/platform/webhooks/webhook-event-types/)):
+
+| Event Type | Description | GA4 Integration |
+|------------|-------------|-----------------|
+| `ORDER_PLACED` | New order created | ✅ Auto-tracks `purchase` |
+| `ORDER_UPDATED` | Order status changed | - |
+| `GIFT_PURCHASE` | Gift purchase made | ✅ Auto-tracks `purchase` |
+| `DONATION` | Donation received | - |
+| `PRODUCT_CREATED` | New product added | - |
+| `PRODUCT_UPDATED` | Product updated | - |
+| `SUBSCRIPTION_PURCHASED` | New subscription | ✅ Auto-tracks `purchase` |
+| `SUBSCRIPTION_CHANGED` | Subscription tier changed | - |
+| `SUBSCRIPTION_EXPIRED` | Subscription ended | - |
+| `THANK_YOU_SENT` | Thank you sent to supporter | - |
+| `NEWSLETTER_SUBSCRIBED` | Newsletter subscription | - |
+| `PLATFORM_APP_DISCONNECTED` | App disconnected | - |
+
+### Webhook Processing Flow
+
+1. **Signature Verification** - HMAC SHA-256 validation
+2. **Idempotency Check** - Prevents duplicate processing
+3. **Zod Validation** - Type-safe payload parsing
+4. **Event Storage** - Audit trail in D1
+5. **Event Processing** - Type-specific handler
+6. **GA4 Tracking** - Automatic for orders/subscriptions
+
+See `/docs/WEBHOOKS.md` for complete webhook documentation.
+
+---
+
+## Adding a New Webhook Handler
+
+1. **Define Schema**: Add to `/src/schemas/webhooks.ts`.
+2. **Create Handler**: Add to `/src/api/webhooks/handlers/`.
+3. **Register Route**: Update `/src/api/webhooks/index.ts`.
+4. **Test**: Add to `/tests/webhooks/`.
+
+See `architecture.md` for the full webhook flow.
+
+## Maintaining Search
+
+Search is powered by a build-time index (`public/search-index.json`).
+
+### 1. How it Works
+The `scripts/generate-search-index.ts` script runs during `prebuild` to scan content and generate the JSON index. The `/api/search` endpoint fetches this index at runtime.
+
+### 2. Adding Searchable Content
+To index new content types (e.g., products from an API):
+1.  Update `scripts/generate-search-index.ts`.
+2.  Add the new items to the `searchIndex` array.
+3.  Ensure the `SearchItem` type in `src/types.ts` covers your fields.
+
+### 3. Updating the UI
+The `ActiveSearch.astro` component uses **Datastar** for live search. To change the UI, edit that component and ensure `data-on-input` still points to `/api/search`.
+
+---
+
+## Adding a New Page
+
+### 1. Create the Astro Page
+Add a new file in `/src/pages/{locale}/`:
+
+```astro
+---
+// /src/pages/[locale]/about.astro
+import Layout from '@/layouts/Layout.astro';
+import { getTranslations } from '@/i18n/utils';
+
+const t = getTranslations(Astro.currentLocale);
+---
+
+<Layout title={t('about.title')}>
+  <main>
+    <h1>{t('about.heading')}</h1>
+    <p>{t('about.intro')}</p>
+  </main>
+</Layout>
+```
+
+### 2. Add Translations
+Update translation files in `/src/i18n/`:
+
+```json
+// /src/i18n/en.json
+{
+  "about": {
+    "title": "About Us",
+    "heading": "Our Story",
+    "intro": "We are a mission-driven organization..."
+  }
+}
+```
+
+### 3. Add to Navigation
+Update the navigation component:
+
+```typescript
+// /src/components/Navigation.ts
+const links = [
+  { href: '/', label: t('nav.home') },
+  { href: '/about', label: t('nav.about') },
+  // ...
+];
+```
+
+### 4. Update Sitemap
+Sitemap generation should automatically pick up the new page via Astro's integration.
+
+## Adding a Database Table
+
+### 1. Create Migration
+Add a new file in `/migrations/`:
+
+```sql
+-- /migrations/0003_add_customers_table.sql
+CREATE TABLE IF NOT EXISTS customers (
+  id TEXT PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  created_at INTEGER DEFAULT (unixepoch())
+);
+
+CREATE INDEX idx_customers_email ON customers(email);
+```
+
+### 2. Define Zod Schemas
+Create schemas in `/src/schemas/database.ts`:
+
+```typescript
+import { z } from 'zod';
+
+export const CustomerSchema = z.object({
+  id: z.string(),
+  email: z.string().email(),
+  name: z.string(),
+  created_at: z.number(),
+});
+
+export const InsertCustomerSchema = CustomerSchema.omit({
+  created_at: true,
+});
+
+export type Customer = z.infer<typeof CustomerSchema>;
+export type InsertCustomer = z.infer<typeof InsertCustomerSchema>;
+```
+
+### 3. Create Database Functions
+Add functions in `/src/lib/db/`:
+
+```typescript
+import { z } from 'zod';
+import { CustomerSchema, InsertCustomerSchema } from '@/schemas/database';
+import type { D1Database } from '@cloudflare/workers-types';
+
+export async function insertCustomer(
+  db: D1Database,
+  data: unknown
+): Promise<Customer> {
+  const validated = InsertCustomerSchema.parse(data);
+  
+  await db
+    .prepare(
+      'INSERT INTO customers (id, email, name) VALUES (?, ?, ?)'
+    )
+    .bind(validated.id, validated.email, validated.name)
+    .run();
+  
+  const result = await db
+    .prepare('SELECT * FROM customers WHERE id = ?')
+    .bind(validated.id)
+    .first();
+  
+  return CustomerSchema.parse(result);
+}
+
+export async function getCustomerByEmail(
+  db: D1Database,
+  email: string
+): Promise<Customer | null> {
+  const result = await db
+    .prepare('SELECT * FROM customers WHERE email = ?')
+    .bind(email)
+    .first();
+  
+  if (!result) return null;
+  
+  return CustomerSchema.parse(result);
+}
+```
+
+### 4. Run Migration
+```bash
+# Apply migration locally
+npx wrangler d1 execute wallbreaker-db --local --file=./migrations/0003_add_customers_table.sql
+
+# Apply migration to production
+npx wrangler d1 execute wallbreaker-db --file=./migrations/0003_add_customers_table.sql
+```
+
+## Creating a Custom Element (Web Component)
+
+### 1. Define the Component
+Create a new file in `/src/components/`:
+
+```typescript
+// /src/components/ProductCard.ts
+export class ProductCard extends HTMLElement {
+  static observedAttributes = ['product-id', 'title', 'price'];
+  
+  connectedCallback() {
+    this.render();
+  }
+  
+  attributeChangedCallback() {
+    this.render();
+  }
+  
+  render() {
+    const title = this.getAttribute('title') || '';
+    const price = this.getAttribute('price') || '0';
+    const productId = this.getAttribute('product-id') || '';
+    
+    this.innerHTML = `
+      <article class="product-card">
+        <img src="/placeholder-product.svg" alt="${title}" loading="lazy">
+        <h3>${title}</h3>
+        <p class="price">$${price}</p>
+        <button data-product-id="${productId}">Add to Cart</button>
+      </article>
+    `;
+    
+    this.querySelector('button')?.addEventListener('click', (e) => {
+      this.dispatchEvent(new CustomEvent('add-to-cart', {
+        detail: { productId },
+        bubbles: true,
+      }));
+    });
+  }
+}
+
+customElements.define('product-card', ProductCard);
+```
+
+### 2. Register the Component
+Import in your layout or page:
+
+```astro
+---
+// /src/layouts/Layout.astro
+---
+<script>
+  import '@/components/ProductCard';
+</script>
+```
+
+### 3. Use the Component
+```html
+<product-card
+  product-id="prod-123"
+  title="Cool T-Shirt"
+  price="29.99"
+></product-card>
+```
+
+### 4. Add to Design System
+Document the component in `/src/pages/[locale]/design-system.astro`:
+
+```astro
+<section>
+  <h2>Product Card</h2>
+  <product-card
+    product-id="example-1"
+    title="Example Product"
+    price="19.99"
+  ></product-card>
+</section>
+```
+
+## Tracking Ecommerce Events
+
+### Server-Side GA4 Enhanced Ecommerce
+
+The project supports GA4 Enhanced Ecommerce event tracking with full schema validation. All events are stored server-side in D1 for analytics while maintaining GTM compatibility.
+
+#### Available Events
+
+1. **Product Views**: `view_item`, `view_item_list`, `select_item`
+2. **Cart Actions**: `add_to_cart`, `remove_from_cart`, `view_cart`
+3. **Checkout Flow**: `begin_checkout`, `add_shipping_info`, `add_payment_info`
+4. **Transactions**: `purchase`, `refund`
+
+#### Example: Track Purchase Event
+
+```typescript
+// POST /api/ecommerce/events
+const purchaseEvent = {
+  event_name: 'purchase',
+  transaction_id: 'T_12345',
+  currency: 'USD',
+  value: 49.99,
+  tax: 4.50,
+  shipping: 5.00,
+  items: [
+    {
+      item_id: 'SKU_12345',
+      item_name: 'Cool T-Shirt',
+      price: 24.99,
+      quantity: 2,
+      item_brand: 'Brand Name',
+      item_category: 'Apparel',
+    }
+  ]
+};
+
+const response = await fetch('/api/ecommerce/events', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(purchaseEvent),
+});
+```
+
+#### Example: Get Ecommerce Stats
+
+```typescript
+// GET /api/ecommerce/stats?days=30
+const stats = await fetch('/api/ecommerce/stats?days=30')
+  .then(r => r.json());
+
+// Returns:
+// {
+//   period_days: 30,
+//   revenue: { total, average_order_value, purchase_count },
+//   conversion: { funnel, cart_abandonment_rate },
+//   top_products: [{ item_id, item_name, purchases, revenue }]
+// }
+```
+
+#### Schema Validation
+
+All ecommerce events are validated against GA4 schemas defined in `src/schemas/ecommerce.ts`. Invalid events will be rejected with detailed error messages.
+
+#### API Endpoints
+
+- `POST /api/ecommerce/events` - Track any GA4 ecommerce event
+- `GET /api/ecommerce/stats?days=30` - Get comprehensive ecommerce statistics
+- `GET /api/ecommerce/revenue?days=30` - Get revenue metrics only
+- `GET /api/ecommerce/funnel?days=30` - Get conversion funnel data
+- `GET /api/ecommerce/products/top?days=30&limit=10` - Get top selling products
+
+---
+
+## Running Tests
+
+### Run All Tests
+```bash
+npm run test
+```
+
+### Run Specific Test File
+```bash
+npm run test tests/webhooks/order-created.spec.ts
+```
+
+### Run Tests in UI Mode
+```bash
+npm run test:ui
+```
+
+### Debug Tests
+```bash
+npm run test:debug
+```
+
+## Working with Translations
+
+### Add a New Language
+
+1. Add locale to `astro.config.mjs`:
+```typescript
+export default defineConfig({
+  i18n: {
+    locales: ['en', 'es', 'fr', 'de'], // Add 'de'
+    defaultLocale: 'en',
+  },
+});
+```
+
+2. Create translation file:
+```bash
+cp src/i18n/en.json src/i18n/de.json
+```
+
+3. Translate the content in `de.json`
+
+### Update a Translation
+Edit the appropriate locale file in `/src/i18n/`:
+
+```json
+// /src/i18n/en.json
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "shop": "Shop"
+  }
+}
+```
+
+## Deploying Changes
+
+### Deploy to Production
+```bash
+npm run build
+npm run deploy
+```
+
+### Preview Build Locally
+```bash
+npm run build
+npm run preview
+```
+
+### Deploy Specific Environment
+```bash
+# Staging
+wrangler deploy --env staging
+
+# Production
+wrangler deploy --env production
+```
+
+## Managing Environment Variables
+
+### Add a Secret
+```bash
+# Local development
+echo "SECRET_VALUE" | wrangler secret put SECRET_NAME --local
+
+# Production
+echo "SECRET_VALUE" | wrangler secret put SECRET_NAME
+```
+
+### List Secrets
+```bash
+wrangler secret list
+```
+
+### Access in Code
+```typescript
+export default {
+  async fetch(request: Request, env: Env) {
+    const apiKey = env.FOURTHWALL_STOREFRONT_API_KEY;
+    // Use the secret
+  },
+};
+```
+
+## Debugging
+
+### View Worker Logs
+```bash
+wrangler tail
+```
+
+### View D1 Database
+```bash
+# Local
+wrangler d1 execute wallbreaker-db --local --command="SELECT * FROM webhook_events LIMIT 10"
+
+# Production
+wrangler d1 execute wallbreaker-db --command="SELECT * FROM webhook_events LIMIT 10"
+```
+
+### Check Analytics
+```bash
+wrangler d1 execute wallbreaker-db --command="SELECT COUNT(*) FROM analytics_pageviews"
+```
+
+## Performance Monitoring
+
+### Check Bundle Size
+```bash
+npm run build
+# Check dist/ folder size
+```
+
+### Analyze Dependencies
+```bash
+npm run analyze
+```
+
+### Lighthouse Audit
+```bash
+npm run lighthouse
+```

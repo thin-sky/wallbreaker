@@ -1,0 +1,194 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { getTranslations } from '@/i18n/utils';
+
+const t = getTranslations(Astro.currentLocale);
+---
+
+<Layout title={t.products.title} description={t.products.description}>
+  <main class="products-page">
+    <header class="page-header">
+      <h1>{t.products.title}</h1>
+      <p>{t.products.subtitle}</p>
+    </header>
+
+    <section class="products-section">
+      <p class="intro-text">
+        Our products are carefully curated to support meaningful causes. Each purchase 
+        helps make a difference in communities around the world.
+      </p>
+
+      <div class="products-grid">
+        <article class="product-card">
+          <div class="product-image-placeholder">
+            <span>Product Image</span>
+          </div>
+          <div class="product-info">
+            <h3>Sample Product 1</h3>
+            <p class="product-description">
+              A high-quality product that supports environmental conservation efforts.
+            </p>
+            <p class="product-price">$29.99</p>
+            <button class="product-button">{t.common.add_to_cart}</button>
+          </div>
+        </article>
+
+        <article class="product-card">
+          <div class="product-image-placeholder">
+            <span>Product Image</span>
+          </div>
+          <div class="product-info">
+            <h3>Sample Product 2</h3>
+            <p class="product-description">
+              Premium merchandise designed to raise awareness for social causes.
+            </p>
+            <p class="product-price">$39.99</p>
+            <button class="product-button">{t.common.add_to_cart}</button>
+          </div>
+        </article>
+
+        <article class="product-card">
+          <div class="product-image-placeholder">
+            <span>Product Image</span>
+          </div>
+          <div class="product-info">
+            <h3>Sample Product 3</h3>
+            <p class="product-description">
+              Sustainable and ethically sourced items that make a positive impact.
+            </p>
+            <p class="product-price">$24.99</p>
+            <button class="product-button">{t.common.add_to_cart}</button>
+          </div>
+        </article>
+
+        <article class="product-card">
+          <div class="product-image-placeholder">
+            <span>Product Image</span>
+          </div>
+          <div class="product-info">
+            <h3>Sample Product 4</h3>
+            <p class="product-description">
+              Limited edition items that support education initiatives worldwide.
+            </p>
+            <p class="product-price">$49.99</p>
+            <button class="product-button">{t.common.add_to_cart}</button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .products-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+  }
+
+  .page-header p {
+    font-size: 1.25rem;
+    color: #666;
+  }
+
+  .intro-text {
+    text-align: center;
+    font-size: 1.125rem;
+    color: #555;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .product-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    background: white;
+  }
+
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-image-placeholder {
+    width: 100%;
+    height: 250px;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    font-size: 0.875rem;
+  }
+
+  .product-info {
+    padding: 1.5rem;
+  }
+
+  .product-info h3 {
+    font-size: 1.25rem;
+    margin: 0 0 0.75rem 0;
+    color: #1a1a1a;
+  }
+
+  .product-description {
+    color: #666;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    margin: 0 0 1rem 0;
+  }
+
+  .product-price {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2563eb;
+    margin: 0 0 1rem 0;
+  }
+
+  .product-button {
+    width: 100%;
+    padding: 0.75rem;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .product-button:hover {
+    background: #1d4ed8;
+  }
+
+  @media (max-width: 768px) {
+    .products-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+    }
+  }
+</style>

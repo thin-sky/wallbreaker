@@ -1,0 +1,72 @@
+{
+  "site": {
+    "title": "Wallbreaker",
+    "description": "Votre boutique en ligne axée sur la mission"
+  },
+  "nav": {
+    "home": "Accueil",
+    "products": "Produits",
+    "collections": "Collections",
+    "blog": "Blog",
+    "about": "À Propos",
+    "faq": "FAQ"
+  },
+  "common": {
+    "add_to_cart": "Ajouter au Panier",
+    "buy_now": "Acheter Maintenant",
+    "learn_more": "En Savoir Plus",
+    "read_more": "Lire Plus",
+    "view_all": "Voir Tout",
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "cart": "Panier d'Achat"
+  },
+  "home": {
+    "title": "Accueil",
+    "hero_title": "Bienvenue chez Wallbreaker",
+    "hero_subtitle": "Soutenir les causes qui comptent"
+  },
+  "footer": {
+    "copyright": "© 2026 Wallbreaker. Tous droits réservés.",
+    "privacy": "Politique de Confidentialité",
+    "terms": "Conditions d'Utilisation"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Actualités, mises à jour et histoires de notre communauté",
+    "description": "Lisez nos derniers articles, mises à jour et histoires",
+    "read_more": "Lire la suite"
+  },
+  "products": {
+    "title": "Produits",
+    "subtitle": "Parcourez notre collection de produits axés sur la mission",
+    "description": "Découvrez des produits qui soutiennent des causes qui vous tiennent à cœur"
+  },
+  "collections": {
+    "title": "Collections",
+    "subtitle": "Collections sélectionnées pour chaque occasion",
+    "description": "Explorez nos collections de produits soigneusement sélectionnés"
+  },
+  "about": {
+    "title": "À Propos de Nous",
+    "subtitle": "En savoir plus sur notre mission et nos valeurs",
+    "description": "Découvrez ce qui nous motive et comment nous faisons la différence"
+  },
+  "faq": {
+    "title": "Questions Fréquemment Posées",
+    "subtitle": "Trouvez des réponses aux questions courantes",
+    "description": "Tout ce que vous devez savoir sur l'achat chez nous"
+  },
+  "newsletter": {
+    "title": "Restez Informé",
+    "description": "Abonnez-vous à notre newsletter pour recevoir les dernières mises à jour, nouveaux produits et offres exclusives",
+    "email_label": "Adresse e-mail",
+    "email_placeholder": "Entrez votre e-mail",
+    "subscribe": "S'abonner",
+    "privacy_note": "Nous respectons votre vie privée. Désabonnez-vous à tout moment."
+  },
+  "social": {
+    "title": "Rejoignez la Conversation",
+    "description": "Suivez-nous sur les réseaux sociaux ou rejoignez nos groupes de discussion communautaires pour rester connecté"
+  }
+}

@@ -1,0 +1,213 @@
+---
+/**
+ * Active Search Component with Datastar
+ * Implements live search as demonstrated at https://data-star.dev/examples/active_search
+ */
+---
+
+<div class="active-search">
+  <div class="search-container">
+    <input
+      type="search"
+      placeholder="Search products, blog posts..."
+      class="search-input"
+      data-on-input="$$get('/api/search?q=' + $event.target.value)"
+      data-store="{query: '', results: {products: [], blog: [], total: 0}}"
+    />
+    
+    <div 
+      class="search-results"
+      data-show="$results.total > 0"
+    >
+      <!-- Blog Results -->
+      <div 
+        class="results-section" 
+        data-show="$results.blog.length > 0"
+      >
+        <h3>Blog Posts</h3>
+        <div data-for="post in $results.blog">
+          <a 
+            :href="post.url" 
+            class="result-item"
+          >
+            <img 
+              :src="post.image" 
+              :alt="post.title"
+              v-if="post.image"
+              class="result-image"
+            />
+            <div class="result-content">
+              <h4 data-text="post.title"></h4>
+              <p data-text="post.description"></p>
+            </div>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Product Results -->
+      <div 
+        class="results-section"
+        data-show="$results.products.length > 0"
+      >
+        <h3>Products</h3>
+        <div data-for="product in $results.products">
+          <a 
+            :href="product.url"
+            class="result-item"
+          >
+            <img 
+              :src="product.image"
+              :alt="product.name"
+              v-if="product.image"
+              class="result-image"
+            />
+            <div class="result-content">
+              <h4 data-text="product.name"></h4>
+              <p class="result-price" data-text="'$' + product.price"></p>
+            </div>
+          </a>
+        </div>
+      </div>
+      
+      <!-- No Results -->
+      <div 
+        class="no-results"
+        data-show="$query && $results.total === 0"
+      >
+        <p>No results found for "<span data-text="$query"></span>"</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Load Datastar from CDN -->
+<script is:inline src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@0.20.0"></script>
+
+<style>
+  .active-search {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .search-container {
+    position: relative;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 2px solid var(--border-color, #e5e7eb);
+    border-radius: 8px;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--primary-color, #3b82f6);
+  }
+
+  .search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    background: white;
+    border: 1px solid var(--border-color, #e5e7eb);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-height: 500px;
+    overflow-y: auto;
+    z-index: 100;
+  }
+
+  .results-section {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+  }
+
+  .results-section:last-child {
+    border-bottom: none;
+  }
+
+  .results-section h3 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    color: var(--text-secondary, #666);
+    margin: 0 0 0.75rem 0;
+    font-weight: 600;
+  }
+
+  .result-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.2s;
+  }
+
+  .result-item:hover {
+    background: var(--bg-secondary, #f9fafb);
+  }
+
+  .result-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .result-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .result-content h4 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1rem;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .result-content p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-secondary, #666);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .result-price {
+    font-weight: 600;
+    color: var(--primary-color, #3b82f6);
+  }
+
+  .no-results {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-secondary, #666);
+  }
+
+  .no-results p {
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .active-search {
+      max-width: 100%;
+    }
+
+    .search-results {
+      max-height: 400px;
+    }
+  }
+</style>

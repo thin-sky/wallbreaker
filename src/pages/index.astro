@@ -1,0 +1,36 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { getTranslations } from '@/i18n/utils';
+
+const t = getTranslations(Astro.currentLocale);
+---
+
+<Layout title={t.home.title}>
+  <main class="container">
+    <section class="hero">
+      <h1>{t.home.hero_title}</h1>
+      <p>{t.home.hero_subtitle}</p>
+    </section>
+  </main>
+  
+  <style>
+    .hero {
+      padding: 4rem 0;
+      text-align: center;
+    }
+    
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+      color: #1a1a1a;
+    }
+    
+    .hero p {
+      font-size: clamp(1.125rem, 2vw, 1.5rem);
+      color: #666;
+      max-width: 60ch;
+      margin: 0 auto;
+    }
+  </style>
+</Layout>

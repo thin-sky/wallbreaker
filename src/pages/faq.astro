@@ -1,0 +1,201 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { getTranslations } from '@/i18n/utils';
+
+const t = getTranslations(Astro.currentLocale);
+---
+
+<Layout title={t.faq.title} description={t.faq.description}>
+  <main class="faq-page">
+    <header class="page-header">
+      <h1>{t.faq.title}</h1>
+      <p>{t.faq.subtitle}</p>
+    </header>
+
+    <section class="faq-content">
+      <div class="faq-item">
+        <h2 class="faq-question">How do I place an order?</h2>
+        <p class="faq-answer">
+          Simply browse our products, add items to your cart, and proceed to checkout. 
+          You'll be redirected to our secure payment partner to complete your purchase. 
+          Once your order is confirmed, you'll receive an email confirmation with order details.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h2 class="faq-question">What payment methods do you accept?</h2>
+        <p class="faq-answer">
+          We accept all major credit cards, debit cards, and digital payment methods 
+          through our secure checkout partner. All transactions are encrypted and secure.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h2 class="faq-question">How does my purchase support causes?</h2>
+        <p class="faq-answer">
+          A portion of every sale goes directly to the cause associated with that product. 
+          We work with our partners to ensure transparency in how funds are allocated and 
+          used. You can find more information about specific causes on individual product pages.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h2 class="faq-question">What is your shipping policy?</h2>
+        <p class="faq-answer">
+          We offer standard and expedited shipping options. Shipping costs and estimated 
+          delivery times are calculated at checkout based on your location. Most orders 
+          ship within 2-3 business days.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h2 class="faq-question">Can I return or exchange items?</h2>
+        <p class="faq-answer">
+          Yes, we accept returns and exchanges within 30 days of purchase, provided items 
+          are unused and in their original packaging. Please contact our customer service 
+          team to initiate a return or exchange.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h2 class="faq-question">Do you ship internationally?</h2>
+        <p class="faq-answer">
+          Currently, we ship to select countries. Shipping availability and costs are 
+          displayed at checkout. We're working to expand our international shipping 
+          options in the future.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h2 class="faq-question">How can I track my order?</h2>
+        <p class="faq-answer">
+          Once your order ships, you'll receive a tracking number via email. You can use 
+          this number to track your package through our shipping partner's website.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h2 class="faq-question">What if I have a problem with my order?</h2>
+        <p class="faq-answer">
+          Our customer service team is here to help! Please reach out to us through our 
+          contact page or email us directly. We aim to respond to all inquiries within 
+          24-48 hours.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h2 class="faq-question">Are your products ethically sourced?</h2>
+        <p class="faq-answer">
+          Yes, we prioritize ethical sourcing and work with partners who share our values. 
+          We conduct regular audits to ensure our products meet high standards for ethical 
+          production and sustainability.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h2 class="faq-question">Can I cancel my order?</h2>
+        <p class="faq-answer">
+          Orders can be cancelled within 24 hours of placement, provided they haven't 
+          shipped yet. Once an order has shipped, it cannot be cancelled but can be 
+          returned following our return policy.
+        </p>
+      </div>
+    </section>
+
+    <section class="faq-contact">
+      <p>
+        Still have questions? <a href="/about">Contact us</a> and we'll be happy to help!
+      </p>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .faq-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+  }
+
+  .page-header p {
+    font-size: 1.25rem;
+    color: #666;
+  }
+
+  .faq-content {
+    margin-bottom: 3rem;
+  }
+
+  .faq-item {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .faq-item:last-of-type {
+    border-bottom: none;
+  }
+
+  .faq-question {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .faq-answer {
+    font-size: 1.0625rem;
+    color: #555;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .faq-contact {
+    text-align: center;
+    padding: 2rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    margin-top: 3rem;
+  }
+
+  .faq-contact p {
+    font-size: 1.125rem;
+    color: #555;
+    margin: 0;
+  }
+
+  .faq-contact a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .faq-contact a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .page-header h1 {
+      font-size: 2rem;
+    }
+
+    .faq-question {
+      font-size: 1.125rem;
+    }
+
+    .faq-answer {
+      font-size: 1rem;
+    }
+  }
+</style>

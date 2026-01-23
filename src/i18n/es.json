@@ -1,0 +1,72 @@
+{
+  "site": {
+    "title": "Wallbreaker",
+    "description": "Tu tienda en línea orientada a la misión"
+  },
+  "nav": {
+    "home": "Inicio",
+    "products": "Productos",
+    "collections": "Colecciones",
+    "blog": "Blog",
+    "about": "Acerca de",
+    "faq": "Preguntas Frecuentes"
+  },
+  "common": {
+    "add_to_cart": "Añadir al Carrito",
+    "buy_now": "Comprar Ahora",
+    "learn_more": "Saber Más",
+    "read_more": "Leer Más",
+    "view_all": "Ver Todo",
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "cart": "Carrito de Compras"
+  },
+  "home": {
+    "title": "Inicio",
+    "hero_title": "Bienvenido a Wallbreaker",
+    "hero_subtitle": "Apoyando causas que importan"
+  },
+  "footer": {
+    "copyright": "© 2026 Wallbreaker. Todos los derechos reservados.",
+    "privacy": "Política de Privacidad",
+    "terms": "Términos de Servicio"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Noticias, actualizaciones e historias de nuestra comunidad",
+    "description": "Lee nuestros últimos artículos, actualizaciones e historias",
+    "read_more": "Leer más"
+  },
+  "products": {
+    "title": "Productos",
+    "subtitle": "Explora nuestra colección de productos orientados a la misión",
+    "description": "Descubre productos que apoyan causas que te importan"
+  },
+  "collections": {
+    "title": "Colecciones",
+    "subtitle": "Colecciones curadas para cada ocasión",
+    "description": "Explora nuestras colecciones de productos seleccionados"
+  },
+  "about": {
+    "title": "Acerca de Nosotros",
+    "subtitle": "Conoce más sobre nuestra misión y valores",
+    "description": "Descubre qué nos impulsa y cómo estamos marcando la diferencia"
+  },
+  "faq": {
+    "title": "Preguntas Frecuentes",
+    "subtitle": "Encuentra respuestas a preguntas comunes",
+    "description": "Todo lo que necesitas saber sobre comprar con nosotros"
+  },
+  "newsletter": {
+    "title": "Mantente Actualizado",
+    "description": "Suscríbete a nuestro boletín para recibir las últimas actualizaciones, nuevos productos y ofertas exclusivas",
+    "email_label": "Dirección de correo electrónico",
+    "email_placeholder": "Ingresa tu correo",
+    "subscribe": "Suscribirse",
+    "privacy_note": "Respetamos tu privacidad. Puedes cancelar la suscripción en cualquier momento."
+  },
+  "social": {
+    "title": "Únete a la Conversación",
+    "description": "Síguenos en redes sociales o únete a nuestros grupos de chat comunitarios para mantenerte conectado"
+  }
+}

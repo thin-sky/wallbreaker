@@ -1,0 +1,178 @@
+---
+import { getTranslations } from '@/i18n/utils';
+import Navigation from '@/components/Navigation.astro';
+import Newsletter from '@/components/Newsletter.astro';
+import SocialMedia from '@/components/SocialMedia.astro';
+import Footer from '@/components/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  locale?: string;
+}
+
+const { title, description, locale } = Astro.props;
+const t = getTranslations(Astro.currentLocale);
+const pageTitle = title || t.site.title;
+const pageDescription = description || t.site.description;
+const currentLocale = locale || Astro.currentLocale || 'en';
+---
+
+<!doctype html>
+<html lang={currentLocale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={pageDescription} />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content="website" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    
+    <title>{pageTitle}</title>
+    
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Load custom elements -->
+    <script>
+      import '@/components/LanguageSwitcher';
+    </script>
+  </head>
+  <body>
+    <Navigation />
+    <slot />
+    <Newsletter />
+    <SocialMedia />
+    <Footer />
+    
+    <style is:global>
+      /* Reset and base styles */
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      
+      html {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 
+                     Roboto, 'Helvetica Neue', Arial, sans-serif;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: white;
+        color: #333;
+      }
+      
+      main {
+        flex: 1;
+      }
+      
+      img, picture, video, canvas, svg {
+        display: block;
+        max-width: 100%;
+      }
+      
+      button, input, textarea, select {
+        font: inherit;
+      }
+      
+      p, h1, h2, h3, h4, h5, h6 {
+        overflow-wrap: break-word;
+      }
+      
+      /* Utility classes */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+      
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+      
+      /* Language Switcher Styles */
+      .language-switcher {
+        position: relative;
+      }
+      
+      .language-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.375rem;
+        background: white;
+        cursor: pointer;
+        transition: border-color 0.2s;
+      }
+      
+      .language-button:hover {
+        border-color: #2563eb;
+      }
+      
+      .language-button svg {
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+      
+      .current-language {
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      
+      .language-menu {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 0.5rem);
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.375rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        list-style: none;
+        padding: 0.5rem 0;
+        min-width: 150px;
+        z-index: 50;
+      }
+      
+      .language-menu a {
+        display: block;
+        padding: 0.5rem 1rem;
+        color: #374151;
+        text-decoration: none;
+        transition: background-color 0.2s;
+      }
+      
+      .language-menu a:hover {
+        background-color: #f3f4f6;
+      }
+      
+      .language-menu a[aria-current="true"] {
+        color: #2563eb;
+        font-weight: 600;
+      }
+    </style>
+  </body>
+</html>

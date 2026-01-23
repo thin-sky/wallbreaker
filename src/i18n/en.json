@@ -1,0 +1,72 @@
+{
+  "site": {
+    "title": "Wallbreaker",
+    "description": "Your mission-driven online store"
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "collections": "Collections",
+    "blog": "Blog",
+    "about": "About",
+    "faq": "FAQ"
+  },
+  "common": {
+    "add_to_cart": "Add to Cart",
+    "buy_now": "Buy Now",
+    "learn_more": "Learn More",
+    "read_more": "Read More",
+    "view_all": "View All",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "cart": "Shopping Cart"
+  },
+  "home": {
+    "title": "Home",
+    "hero_title": "Welcome to Wallbreaker",
+    "hero_subtitle": "Supporting causes that matter"
+  },
+  "footer": {
+    "copyright": "© 2026 Wallbreaker. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "News, updates, and stories from our community",
+    "description": "Read our latest articles, updates, and stories",
+    "read_more": "Read more"
+  },
+  "products": {
+    "title": "Products",
+    "subtitle": "Browse our collection of mission-driven products",
+    "description": "Discover products that support causes you care about"
+  },
+  "collections": {
+    "title": "Collections",
+    "subtitle": "Curated collections for every occasion",
+    "description": "Explore our handpicked product collections"
+  },
+  "about": {
+    "title": "About Us",
+    "subtitle": "Learn more about our mission and values",
+    "description": "Discover what drives us and how we're making a difference"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to common questions",
+    "description": "Everything you need to know about shopping with us"
+  },
+  "newsletter": {
+    "title": "Stay Updated",
+    "description": "Subscribe to our newsletter for the latest updates, new products, and exclusive offers",
+    "email_label": "Email address",
+    "email_placeholder": "Enter your email",
+    "subscribe": "Subscribe",
+    "privacy_note": "We respect your privacy. Unsubscribe at any time."
+  },
+  "social": {
+    "title": "Join the Conversation",
+    "description": "Follow us on social media or join our community chat groups to stay connected"
+  }
+}

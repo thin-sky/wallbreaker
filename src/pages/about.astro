@@ -1,0 +1,162 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { getTranslations } from '@/i18n/utils';
+
+const t = getTranslations(Astro.currentLocale);
+---
+
+<Layout title={t.about.title} description={t.about.description}>
+  <main class="about-page">
+    <header class="page-header">
+      <h1>{t.about.title}</h1>
+      <p>{t.about.subtitle}</p>
+    </header>
+
+    <section class="about-content">
+      <div class="about-section">
+        <h2>Our Mission</h2>
+        <p>
+          At Wallbreaker, we believe that commerce can be a force for good. Our mission 
+          is to create a platform where every purchase supports meaningful causes and 
+          makes a positive impact on communities around the world.
+        </p>
+        <p>
+          We partner with organizations and creators who share our values, ensuring that 
+          every product sold contributes to causes that matter—from environmental 
+          conservation to education, health, and social justice.
+        </p>
+      </div>
+
+      <div class="about-section">
+        <h2>Our Values</h2>
+        <ul class="values-list">
+          <li>
+            <strong>Transparency:</strong> We believe in being open about how your 
+            purchases make a difference.
+          </li>
+          <li>
+            <strong>Sustainability:</strong> We prioritize products and practices that 
+            respect our planet.
+          </li>
+          <li>
+            <strong>Impact:</strong> Every purchase is designed to create positive change 
+            in communities worldwide.
+          </li>
+          <li>
+            <strong>Quality:</strong> We curate only the best products that align with 
+            our mission.
+          </li>
+        </ul>
+      </div>
+
+      <div class="about-section">
+        <h2>How It Works</h2>
+        <p>
+          When you shop with us, a portion of every sale goes directly to supporting 
+          the causes associated with each product. We work closely with our partners 
+          to ensure your contributions reach the right places and make the maximum impact.
+        </p>
+        <p>
+          Whether you're buying for yourself or as a gift, you can shop with confidence 
+          knowing that your purchase is making a difference.
+        </p>
+      </div>
+
+      <div class="about-section">
+        <h2>Join Us</h2>
+        <p>
+          We're always looking for partners, creators, and customers who share our vision. 
+          Together, we can break down barriers and build a better world—one purchase at a time.
+        </p>
+        <p>
+          Have questions or want to get involved? We'd love to hear from you. Reach out 
+          through our contact page or connect with us on social media.
+        </p>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .about-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+  }
+
+  .page-header p {
+    font-size: 1.25rem;
+    color: #666;
+  }
+
+  .about-content {
+    line-height: 1.8;
+  }
+
+  .about-section {
+    margin-bottom: 3rem;
+  }
+
+  .about-section h2 {
+    font-size: 1.875rem;
+    margin-bottom: 1rem;
+    color: #1a1a1a;
+  }
+
+  .about-section p {
+    font-size: 1.125rem;
+    color: #555;
+    margin-bottom: 1rem;
+  }
+
+  .values-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .values-list li {
+    font-size: 1.125rem;
+    color: #555;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .values-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #2563eb;
+    font-weight: bold;
+  }
+
+  .values-list strong {
+    color: #1a1a1a;
+  }
+
+  @media (max-width: 768px) {
+    .page-header h1 {
+      font-size: 2rem;
+    }
+
+    .about-section h2 {
+      font-size: 1.5rem;
+    }
+
+    .about-section p,
+    .values-list li {
+      font-size: 1rem;
+    }
+  }
+</style>

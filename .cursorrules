@@ -1,0 +1,29 @@
+# Cursor AI Rules for Wallbreaker
+
+## 📚 Read This First
+**ALWAYS read `/ai/README.md` before making any changes** - This is your single source of truth.
+
+## Documentation Structure
+All project documentation is in `/ai/`:
+- `README.md` - Project overview and quick start
+- `architecture.md` - System design and technical decisions  
+- `tasks.md` - Step-by-step guides for common operations
+- `limitations.md` - Free tier constraints and cost management
+- `testing.md` - Testing procedures
+- `deployment.md` - Deployment workflows
+
+## Critical Rules (Quick Reference)
+1. **NEVER** make database queries without Zod validation
+2. **ALWAYS** verify webhook signatures from Fourthwall
+3. **ALWAYS** check for idempotency on webhook handlers
+4. **ALWAYS** update relevant documentation in `/ai/` when making architectural changes
+5. **NEVER** use heavy JavaScript frameworks - stick to Custom Elements
+
+## Tech Stack
+Astro 4.x • Hono • Cloudflare Workers • D1 • R2 • Zod • Custom Elements
+
+## Questions?
+1. Check `/ai/README.md`
+2. Check specific guides in `/ai/`
+3. Refer to official documentation (links in main README.md)
+4. Ask the user if still unclear

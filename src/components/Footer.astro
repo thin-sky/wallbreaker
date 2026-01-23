@@ -1,0 +1,60 @@
+---
+import { getTranslations } from '@/i18n/utils';
+
+const t = getTranslations(Astro.currentLocale);
+---
+
+<footer class="site-footer">
+  <div class="container footer-container">
+    <p class="copyright">{t.footer.copyright}</p>
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <a href="/privacy">{t.footer.privacy}</a>
+      <a href="/terms">{t.footer.terms}</a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    margin-top: auto;
+    padding: 2rem 0;
+  }
+  
+  .footer-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .copyright {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+  
+  .footer-nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .footer-nav a {
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+  }
+  
+  .footer-nav a:hover {
+    color: #374151;
+  }
+  
+  @media (max-width: 640px) {
+    .footer-container {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>

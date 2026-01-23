@@ -1,0 +1,205 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { getTranslations } from '@/i18n/utils';
+
+const t = getTranslations(Astro.currentLocale);
+---
+
+<Layout title={t.collections.title} description={t.collections.description}>
+  <main class="collections-page">
+    <header class="page-header">
+      <h1>{t.collections.title}</h1>
+      <p>{t.collections.subtitle}</p>
+    </header>
+
+    <section class="collections-section">
+      <p class="intro-text">
+        Browse our curated collections, each designed around a specific theme or cause. 
+        Find the perfect products for yourself or as gifts.
+      </p>
+
+      <div class="collections-grid">
+        <article class="collection-card">
+          <div class="collection-image-placeholder">
+            <span>Collection Image</span>
+          </div>
+          <div class="collection-info">
+            <h3>Environmental Collection</h3>
+            <p class="collection-description">
+              Products that support environmental conservation and sustainability efforts.
+            </p>
+            <a href="/products" class="collection-link">{t.common.view_all} →</a>
+          </div>
+        </article>
+
+        <article class="collection-card">
+          <div class="collection-image-placeholder">
+            <span>Collection Image</span>
+          </div>
+          <div class="collection-info">
+            <h3>Education Collection</h3>
+            <p class="collection-description">
+              Items that help fund education initiatives and support learning programs.
+            </p>
+            <a href="/products" class="collection-link">{t.common.view_all} →</a>
+          </div>
+        </article>
+
+        <article class="collection-card">
+          <div class="collection-image-placeholder">
+            <span>Collection Image</span>
+          </div>
+          <div class="collection-info">
+            <h3>Health & Wellness</h3>
+            <p class="collection-description">
+              Products that contribute to health programs and wellness initiatives.
+            </p>
+            <a href="/products" class="collection-link">{t.common.view_all} →</a>
+          </div>
+        </article>
+
+        <article class="collection-card">
+          <div class="collection-image-placeholder">
+            <span>Collection Image</span>
+          </div>
+          <div class="collection-info">
+            <h3>Social Justice</h3>
+            <p class="collection-description">
+              Merchandise that supports social justice causes and community empowerment.
+            </p>
+            <a href="/products" class="collection-link">{t.common.view_all} →</a>
+          </div>
+        </article>
+
+        <article class="collection-card">
+          <div class="collection-image-placeholder">
+            <span>Collection Image</span>
+          </div>
+          <div class="collection-info">
+            <h3>Limited Edition</h3>
+            <p class="collection-description">
+              Exclusive items available for a limited time, supporting various causes.
+            </p>
+            <a href="/products" class="collection-link">{t.common.view_all} →</a>
+          </div>
+        </article>
+
+        <article class="collection-card">
+          <div class="collection-image-placeholder">
+            <span>Collection Image</span>
+          </div>
+          <div class="collection-info">
+            <h3>Gift Sets</h3>
+            <p class="collection-description">
+              Thoughtfully curated gift sets perfect for any occasion.
+            </p>
+            <a href="/products" class="collection-link">{t.common.view_all} →</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .collections-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+  }
+
+  .page-header p {
+    font-size: 1.25rem;
+    color: #666;
+  }
+
+  .intro-text {
+    text-align: center;
+    font-size: 1.125rem;
+    color: #555;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+  }
+
+  .collections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .collection-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    background: white;
+  }
+
+  .collection-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .collection-image-placeholder {
+    width: 100%;
+    height: 200px;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    font-size: 0.875rem;
+  }
+
+  .collection-info {
+    padding: 1.5rem;
+  }
+
+  .collection-info h3 {
+    font-size: 1.5rem;
+    margin: 0 0 0.75rem 0;
+    color: #1a1a1a;
+  }
+
+  .collection-description {
+    color: #666;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    margin: 0 0 1rem 0;
+  }
+
+  .collection-link {
+    display: inline-block;
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .collection-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .collections-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+    }
+  }
+</style>
