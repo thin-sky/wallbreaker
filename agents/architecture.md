@@ -12,7 +12,7 @@ Wallbreaker is a headless e-commerce frontend for Fourthwall stores, deployed on
 ## Technology Stack
 
 ### Core Frameworks
-- **Astro 5.x** - Static site generator with SSR capabilities
+- **Astro 6.x** - Static site generator with SSR capabilities
   - `@astrojs/cloudflare` adapter for Workers integration
   - Native i18n for URL-based language routing (`/en/`, `/es/`)
   - Content Collections for type-safe markdown content

@@ -1,6 +1,6 @@
 {
   "name": "wallbreaker",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Wallbreaker is a headless e-commerce store template built on [Fourthwall](https://fourthwall.com/), [Cloudflare Workers](https://developers.cloudflare.com/workers/) and [Astro](https://astro.build/). It's designed to work on the free tier plan for both platform and ingest all webhooks availble from Fourthwall using a [Hono](https://hono.dev/) router.",
   "type": "module",
   "scripts": {

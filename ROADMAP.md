@@ -6,7 +6,6 @@ This document tracks planned features and enhancements for the Wallbreaker proje
 
 ### Search & Discovery
 
-
 ### Email Notifications
 
 - [ ] Order Confirmation Emails

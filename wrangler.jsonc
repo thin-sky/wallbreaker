@@ -1,4 +1,6 @@
 {
+    // Astro 6 / @astrojs/cloudflare v13: use adapter entrypoint for dev + production
+    "main": "@astrojs/cloudflare/entrypoints/server",
     "name": "wallbreaker",
     "compatibility_date": "2026-01-20",
     "compatibility_flags": [
@@ -19,7 +21,7 @@
     "kv_namespaces": [
         {
             "binding": "SESSIONS",
-            "id": "47f4910e2fd44805a568723f0399b161"
+            "id": "775877b31c7d488f9d93898fbba99a1b"
         }
     ],
     // D1 Database

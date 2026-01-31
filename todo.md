@@ -26,7 +26,7 @@ _All environment secrets have been configured for both local development and pro
   - Verify analytics tracking works
 
 ### Post-Deployment Configuration
-- [ ] **Test webhook delivery**
+- [x] **Test webhook delivery**
   - Create a test order in Fourthwall
   - Verify webhook is received and processed
   - Check logs: `wrangler tail`
@@ -45,7 +45,7 @@ _All environment secrets have been configured for both local development and pro
 - [ ] **Set up usage monitoring script**
   ```bash
   # Create weekly reminder to check usage
-  # See ai/limitations.md for the check-usage.sh script
+  # See agents/limitations.md for the check-usage.sh script
   ```
 
 ### Documentation & Backups
@@ -124,9 +124,9 @@ npm run deploy
 ---
 
 ## Questions?
-- Refer to `/ai/deployment.md` for detailed deployment instructions
-- Check `/ai/limitations.md` for free tier constraints
-- See `/ai/README.md` for project overview
+- Refer to `/agents/deployment.md` for detailed deployment instructions
+- Check `/agents/limitations.md` for free tier constraints
+- See `/agents/README.md` for project overview
 - Consult official documentation (links in main README.md)
 
 **Remember to update this file as you complete tasks!**

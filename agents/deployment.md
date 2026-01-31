@@ -21,15 +21,18 @@ Before deploying, ensure you have:
 # Create database
 wrangler d1 create wallbreaker-db
 
-# Save the database_id from output, add to wrangler.toml
+# Save the database_id from output, add to wrangler.jsonc
 ```
 
-Update `wrangler.toml`:
-```toml
-[[d1_databases]]
-binding = "DB"
-database_name = "wallbreaker-db"
-database_id = "your-database-id-here"
+Update `wrangler.jsonc`:
+```jsonc
+"d1_databases": [
+  {
+    "binding": "DB",
+    "database_name": "wallbreaker-db",
+    "database_id": "your-database-id-here"
+  }
+]
 ```
 
 ### 2. Run Database Migrations
@@ -60,11 +63,14 @@ wrangler r2 bucket create wallbreaker-backups
 wrangler r2 bucket list
 ```
 
-Update `wrangler.toml`:
-```toml
-[[r2_buckets]]
-binding = "BACKUPS"
-bucket_name = "wallbreaker-backups"
+Update `wrangler.jsonc`:
+```jsonc
+"r2_buckets": [
+  {
+    "binding": "BACKUPS",
+    "bucket_name": "wallbreaker-backups"
+  }
+]
 ```
 
 ### 4. Set Environment Secrets
@@ -115,35 +121,47 @@ When prompted, paste the secret value and press Enter. The value will not be dis
 wrangler secret list
 ```
 
-### 5. Configure wrangler.toml
+### 5. Configure wrangler.jsonc
 
-```toml
-name = "wallbreaker"
-main = "dist/_worker.js"
-compatibility_date = "2024-01-01"
+**Astro 6 / @astrojs/cloudflare v13:** Use the adapter entrypoint for both `astro dev` and production:
 
-# Cloudflare Pages integration
-pages_build_output_dir = "dist"
+```jsonc
+{
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "name": "wallbreaker",
+  "compatibility_date": "2026-01-20",
+  "compatibility_flags": ["nodejs_compat"],
 
-# D1 Database
-[[d1_databases]]
-binding = "DB"
-database_name = "wallbreaker-db"
-database_id = "your-database-id"
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "STATIC_ASSETS"
+  },
 
-# R2 Storage
-[[r2_buckets]]
-binding = "BACKUPS"
-bucket_name = "wallbreaker-backups"
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "wallbreaker-db",
+      "database_id": "your-database-id"
+    }
+  ],
 
-# Cron Triggers
-[triggers]
-crons = [
-  "0 2 * * 0",   # Weekly backup (Sundays at 2am UTC)
-  "0 3 * * *",   # Daily reconciliation (3am UTC)
-]
+  "r2_buckets": [
+    {
+      "binding": "BACKUPS",
+      "bucket_name": "wallbreaker-backups"
+    }
+  ],
 
+  "triggers": {
+    "crons": [
+      "0 2 * * 7",
+      "0 3 * * *"
+    ]
+  }
+}
 ```
+
+See [Astro 6 Cloudflare upgrade guide](https://v6.docs.astro.build/en/guides/integrations-guide/cloudflare/#upgrading-to-v13-and-astro-6) for details.
 
 ## Deployment Process
 
@@ -338,7 +356,7 @@ wrangler --version
 # Update Wrangler
 npm install -g wrangler@latest
 
-# Verify wrangler.toml syntax
+# Verify wrangler.jsonc syntax
 wrangler publish --dry-run
 ```
 
