@@ -4,29 +4,23 @@
 
 ## Deployment Process
 
-### Automatic Deployment (GitHub Actions)
+### Automatic Deployment (Cloudflare GitHub Integration)
 
-Changes pushed to `main` branch automatically deploy:
+Push to `main` branch and Cloudflare automatically builds and deploys:
 
 ```bash
-# Push to main triggers deployment
 git add .
 git commit -m "feat: description"
 git push origin main
-
-# Check deployment status
-gh run list --repo thin-sky/wallbreaker
 ```
 
-### Manual Deployment
+**Verify deployment:**
+- Check: https://dash.cloudflare.com → Workers & Pages → wallbreaker → Deployments
+- Health check: `curl https://wallbreaker.thin-sky.cloud/api/health`
 
-```bash
-# Build
-npm run build
+### Build Verification (GitHub Actions)
 
-# Deploy to production
-npm run deploy
-```
+The `build.yml` workflow runs on every push to verify the build works. If it passes, Cloudflare deploys.
 
 ## Health Check
 
