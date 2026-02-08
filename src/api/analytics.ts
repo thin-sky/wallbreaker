@@ -9,6 +9,7 @@ import {
   getTopEvents,
 } from '@/lib/db/analytics';
 import { InsertAnalyticsPageviewSchema, InsertAnalyticsEventSchema } from '@/schemas/database';
+import { errorResponse, ErrorCode, validationError, serverError } from '@/lib/errors';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -23,10 +24,7 @@ app.post('/analytics/pageviews', async (c) => {
     // Validate input
     const validated = InsertAnalyticsPageviewSchema.safeParse(body);
     if (!validated.success) {
-      return c.json({
-        error: 'Invalid request body',
-        details: validated.error.issues,
-      }, 400);
+      return validationError(c, validated.error.issues);
     }
     
     // Extract additional data from request
@@ -41,15 +39,10 @@ app.post('/analytics/pageviews', async (c) => {
     });
     
     return c.json({
-      success: true,
-      id,
+      data: { id },
     }, 201);
   } catch (error) {
-    console.error('Error tracking pageview:', error);
-    return c.json({
-      error: 'Failed to track pageview',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    }, 500);
+    return serverError(c, error);
   }
 });
 
@@ -64,25 +57,17 @@ app.post('/analytics/events', async (c) => {
     // Validate input
     const validated = InsertAnalyticsEventSchema.safeParse(body);
     if (!validated.success) {
-      return c.json({
-        error: 'Invalid request body',
-        details: validated.error.issues,
-      }, 400);
+      return validationError(c, validated.error.issues);
     }
     
     // Insert analytics event
     const id = await insertAnalyticsEvent(c.env.DB, validated.data);
     
     return c.json({
-      success: true,
-      id,
+      data: { id },
     }, 201);
   } catch (error) {
-    console.error('Error tracking event:', error);
-    return c.json({
-      error: 'Failed to track event',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    }, 500);
+    return serverError(c, error);
   }
 });
 
@@ -101,16 +86,14 @@ app.get('/analytics/stats', async (c) => {
     ]);
     
     return c.json({
-      period_days: days,
-      top_pages: topPages,
-      top_events: topEvents,
+      data: {
+        period_days: days,
+        top_pages: topPages,
+        top_events: topEvents,
+      },
     });
   } catch (error) {
-    console.error('Error fetching analytics stats:', error);
-    return c.json({
-      error: 'Failed to fetch stats',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    }, 500);
+    return serverError(c, error);
   }
 });
 
@@ -126,16 +109,14 @@ app.get('/analytics/pageviews/:path', async (c) => {
     const count = await getPageviewCount(c.env.DB, `/${path}`, days);
     
     return c.json({
-      path: `/${path}`,
-      views: count,
-      period_days: days,
+      data: {
+        path: `/${path}`,
+        views: count,
+        period_days: days,
+      },
     });
   } catch (error) {
-    console.error('Error fetching pageview count:', error);
-    return c.json({
-      error: 'Failed to fetch pageview count',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    }, 500);
+    return serverError(c, error);
   }
 });
 
@@ -151,16 +132,14 @@ app.get('/analytics/events/:name', async (c) => {
     const count = await getEventCount(c.env.DB, eventName, days);
     
     return c.json({
-      event_name: eventName,
-      count,
-      period_days: days,
+      data: {
+        event_name: eventName,
+        count,
+        period_days: days,
+      },
     });
   } catch (error) {
-    console.error('Error fetching event count:', error);
-    return c.json({
-      error: 'Failed to fetch event count',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    }, 500);
+    return serverError(c, error);
   }
 });
 

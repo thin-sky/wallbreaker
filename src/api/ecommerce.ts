@@ -10,6 +10,7 @@ import {
   getTopProducts,
   getCartAbandonmentRate,
 } from '@/lib/db/ecommerce';
+import { errorResponse, ErrorCode, validationError, serverError } from '@/lib/errors';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -26,11 +27,7 @@ app.post('/ecommerce/events', async (c) => {
     // Validate against GA4 Enhanced Ecommerce schema
     const validated = GA4EcommerceEventSchema.safeParse(body);
     if (!validated.success) {
-      return c.json({
-        error: 'Invalid ecommerce event format',
-        details: validated.error.issues,
-        hint: 'Must follow GA4 Enhanced Ecommerce schema',
-      }, 400);
+      return validationError(c, validated.error.issues);
     }
     
     const event = validated.data;
@@ -44,7 +41,7 @@ app.post('/ecommerce/events', async (c) => {
     const eventData = {
       event_name: event.event_name,
       path,
-      locale: null, // Can be added from body if needed
+      locale: null,
       currency: 'currency' in event ? event.currency : null,
       value: 'value' in event ? event.value : null,
       transaction_id: 'transaction_id' in event ? event.transaction_id : null,
@@ -60,16 +57,10 @@ app.post('/ecommerce/events', async (c) => {
     const id = await insertEcommerceEvent(c.env.DB, eventData);
     
     return c.json({
-      success: true,
-      id,
-      event_name: event.event_name,
+      data: { id, event_name: event.event_name },
     }, 201);
   } catch (error) {
-    console.error('Error tracking ecommerce event:', error);
-    return c.json({
-      error: 'Failed to track ecommerce event',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    }, 500);
+    return serverError(c, error);
   }
 });
 
@@ -99,24 +90,22 @@ app.get('/ecommerce/stats', async (c) => {
     ]);
     
     return c.json({
-      period_days: days,
-      revenue: {
-        total: revenue,
-        average_order_value: avgOrderValue,
-        purchase_count: purchaseCount,
+      data: {
+        period_days: days,
+        revenue: {
+          total: revenue,
+          average_order_value: avgOrderValue,
+          purchase_count: purchaseCount,
+        },
+        conversion: {
+          funnel,
+          cart_abandonment_rate: abandonmentRate,
+        },
+        top_products: topProducts,
       },
-      conversion: {
-        funnel,
-        cart_abandonment_rate: abandonmentRate,
-      },
-      top_products: topProducts,
     });
   } catch (error) {
-    console.error('Error fetching ecommerce stats:', error);
-    return c.json({
-      error: 'Failed to fetch ecommerce stats',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    }, 500);
+    return serverError(c, error);
   }
 });
 
@@ -135,17 +124,15 @@ app.get('/ecommerce/revenue', async (c) => {
     ]);
     
     return c.json({
-      period_days: days,
-      total_revenue: revenue,
-      total_orders: purchaseCount,
-      average_order_value: avgOrderValue,
+      data: {
+        period_days: days,
+        total_revenue: revenue,
+        total_orders: purchaseCount,
+        average_order_value: avgOrderValue,
+      },
     });
   } catch (error) {
-    console.error('Error fetching revenue metrics:', error);
-    return c.json({
-      error: 'Failed to fetch revenue metrics',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    }, 500);
+    return serverError(c, error);
   }
 });
 
@@ -160,15 +147,13 @@ app.get('/ecommerce/funnel', async (c) => {
     const funnel = await getConversionFunnel(c.env.DB, days);
     
     return c.json({
-      period_days: days,
-      funnel,
+      data: {
+        period_days: days,
+        funnel,
+      },
     });
   } catch (error) {
-    console.error('Error fetching conversion funnel:', error);
-    return c.json({
-      error: 'Failed to fetch conversion funnel',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    }, 500);
+    return serverError(c, error);
   }
 });
 
@@ -184,15 +169,13 @@ app.get('/ecommerce/products/top', async (c) => {
     const products = await getTopProducts(c.env.DB, limit, days);
     
     return c.json({
-      period_days: days,
-      products,
+      data: {
+        period_days: days,
+        products,
+      },
     });
   } catch (error) {
-    console.error('Error fetching top products:', error);
-    return c.json({
-      error: 'Failed to fetch top products',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    }, 500);
+    return serverError(c, error);
   }
 });
 
